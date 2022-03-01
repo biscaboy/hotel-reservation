@@ -1,7 +1,5 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
-import com.sun.tools.javac.Main;
-
 import java.util.Scanner;
 
 public class HotelApplication {
@@ -38,7 +36,7 @@ public class HotelApplication {
                     continue;
                 }
 
-                menu.doOption(userInput);
+                menu.doOption(userInput, scanner);
 
             } catch (Exception ex) {
                 System.out.println("Unable to read input.  Please try again.");

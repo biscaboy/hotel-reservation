@@ -11,9 +11,11 @@ import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 public class ReservationService {
 
     private static Collection<Reservation> reservations;
+    private static Collection<IRoom> rooms;
     private static ReservationService instance;
 
     private ReservationService(){
+        rooms = new HashSet<IRoom>();
         reservations = new HashSet<Reservation>();
     }
 
@@ -25,7 +27,7 @@ public class ReservationService {
     }
 
     public void addRoom(IRoom room){
-
+        rooms.add(room);
     }
 
     public IRoom getARoom(String roomId){
@@ -46,6 +48,10 @@ public class ReservationService {
 
     public void printAllReservations(){
 
+    }
+
+    public Collection<IRoom> getAllRooms(){
+        return new HashSet<IRoom>(rooms);
     }
 }
 

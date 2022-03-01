@@ -1,5 +1,7 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
+import java.util.Scanner;
+
 public class MainMenu extends CliMenu {
 
     private static final int RESERVE_A_ROOM = 1;
@@ -21,10 +23,6 @@ public class MainMenu extends CliMenu {
             " 5. Exit \n" +
             " =================================";
 
-
-
-
-
     private static MainMenu instance;
 
     private MainMenu() {
@@ -43,7 +41,7 @@ public class MainMenu extends CliMenu {
         System.out.println(menu);
     }
 
-    public void doOption(int item){
+    public void doOption(int item, Scanner scanner){
 
         switch (item) {
             case (RESERVE_A_ROOM) :

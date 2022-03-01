@@ -1,6 +1,7 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
+import java.util.Scanner;
 
 public class AdminMenu extends CliMenu {
 
@@ -19,7 +20,11 @@ public class AdminMenu extends CliMenu {
 
     private static AdminMenu instance;
 
-    private AdminMenu() {}
+    private AdminResource adminResource;
+
+    private AdminMenu() {
+        adminResource = AdminResource.getInstance();
+    }
 
     public static AdminMenu getInstance(){
         if (instance == null) {
@@ -32,7 +37,7 @@ public class AdminMenu extends CliMenu {
         System.out.println(menu);
     }
 
-    public void doOption(int item){
+    public void doOption(int item, Scanner scanner){
 
         // TODO: Add these actions.
         switch (item) {
@@ -43,13 +48,8 @@ public class AdminMenu extends CliMenu {
             case (SEE_ALL_RESERVATIONS_OPTION) :
                 break;
             case (ADD_A_ROOM_OPTION) :
-                AdminResource resource = AdminResource.getInstance();
-                // get user input
+                // get user input (room, rate, type)
 
-                // create a room
-
-                // save it
-                //resource.addRoom();
                 break;
         }
     }

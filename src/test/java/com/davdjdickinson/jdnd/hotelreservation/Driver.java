@@ -1,5 +1,6 @@
 package com.davdjdickinson.jdnd.hotelreservation;
 
+import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import java.io.PrintWriter;
@@ -22,6 +23,8 @@ public class Driver {
         testCustomerEmailValidation();
         runJUnitTests();
 
+        // formatting tests relies on data created from above tests.
+        testPrintAllReservations();
     }
 
     private static void testCustomerToString(){
@@ -37,6 +40,11 @@ public class Driver {
                 System.out.println("Email validation test: successful!");
             }
         }
+
+    private static void testPrintAllReservations() {
+        AdminResource ar = AdminResource.getInstance();
+        ar.displayAllReservations();
+    }
 
     /**
      * Credit: Baeldung.com

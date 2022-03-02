@@ -1,5 +1,6 @@
 package com.davidjdickinson.jdnd.hotelreservation.service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
@@ -70,6 +71,16 @@ public class ReservationService {
     }
 
     public void printAllReservations(){
+        int count = 1;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        for (Reservation r : reservationsMap.values()) {
+            String line = count + ". Email: " + r.getCustomer().getEmail() +
+                    " | Room: " + r.getRoom().getRoomNumber() +
+                    " | Check In: " + formatter.format(r.getCheckInDate()) +
+                    " | Check Out: " + formatter.format(r.getCheckOutDate());
+            System.out.println(line);
+            count++;
+        }
 
     }
 

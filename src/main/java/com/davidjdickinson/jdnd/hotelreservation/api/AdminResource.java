@@ -2,6 +2,7 @@ package com.davidjdickinson.jdnd.hotelreservation.api;
 
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
+import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 import com.davidjdickinson.jdnd.hotelreservation.service.CustomerService;
 import com.davidjdickinson.jdnd.hotelreservation.service.ReservationService;
 
@@ -51,6 +52,6 @@ public class AdminResource {
     }
 
     public void displayAllReservations() {
-
+        reservationService.printAllReservations();
     }
 }

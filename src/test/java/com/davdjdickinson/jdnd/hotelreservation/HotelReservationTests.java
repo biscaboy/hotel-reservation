@@ -4,8 +4,6 @@ import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
 import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.*;
 import org.junit.jupiter.api.*;
-
-import java.net.InterfaceAddress;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -196,4 +194,21 @@ public class HotelReservationTests {
         Assertions.assertFalse(found);
     }
 
+    @Test
+    @DisplayName("Get a customer (Admin Resource)")
+    public void get_a_admin_customer(){
+        AdminResource ar = AdminResource.getInstance();
+        Customer c = ar.getCustomer("jack@uphill.com");
+        Assertions.assertNotNull(c);
+        Assertions.assertEquals("Jack", c.getFirstName());
+    }
+
+    @Test
+    @DisplayName("Get a customer (Hotel Resource)")
+    public void get_a_hotel_customer(){
+        HotelResource hr = HotelResource.getInstance();
+        Customer c = hr.getCustomer("jack@uphill.com");
+        Assertions.assertNotNull(c);
+        Assertions.assertEquals("Jack", c.getFirstName());
+    }
 }

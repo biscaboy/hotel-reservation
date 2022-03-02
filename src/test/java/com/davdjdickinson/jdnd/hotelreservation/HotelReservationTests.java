@@ -73,4 +73,16 @@ public class HotelReservationTests {
         Assertions.assertTrue(savedRooms.contains(room));
     }
 
+    @Test
+    @DisplayName("Get a room")
+    public void get_a_room(){
+        Room room = new Room("100", 125.0, RoomType.SINGLE );
+        List<IRoom> rooms = new LinkedList<IRoom>();
+        rooms.add(room);
+        AdminResource resource = AdminResource.getInstance();
+        resource.addRoom(rooms);
+        HotelResource hotelResource = HotelResource.getInstance();
+        IRoom savedRoom = hotelResource.getRoom("100");
+        Assertions.assertEquals(savedRoom.getRoomNumber(), "100");
+    }
 }

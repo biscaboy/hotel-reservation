@@ -1,8 +1,6 @@
 package com.davidjdickinson.jdnd.hotelreservation.service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
@@ -13,12 +11,12 @@ public class ReservationService {
     private static Collection<Reservation> reservations;
     private static Collection<IRoom> rooms;
     private static ReservationService instance;
-    private static Collection<String> roomNumbers;
+    private static Map<String, IRoom> roomMap;
 
     private ReservationService(){
-        roomNumbers = new HashSet<>();
+        roomMap = new HashMap<>();
         rooms = new HashSet<>();
-        reservations = new HashSet<Reservation>();
+        reservations = new HashSet<>();
     }
 
     public static ReservationService getInstance(){
@@ -29,14 +27,14 @@ public class ReservationService {
     }
 
     public void addRoom(IRoom room){
-        if (!roomNumbers.contains(room.getRoomNumber())) {
-            roomNumbers.add(room.getRoomNumber());
+        if (!roomMap.containsKey(room.getRoomNumber())) {
+            roomMap.put(room.getRoomNumber(), room);
             rooms.add(room);
         }
     }
 
     public IRoom getARoom(String roomId){
-        return null;
+        return roomMap.get(roomId);
     }
 
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){

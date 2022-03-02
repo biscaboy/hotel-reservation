@@ -40,14 +40,17 @@ public class HotelResource {
     }
 
     public Reservation bookARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
-        return null;
+        return reservationService.reserveARoom(customer, room, checkInDate,checkOutDate);
+
     }
 
-    public Collection<Reservation> getCustomerReservations(){
-        return null;
+    public Collection<Reservation> getCustomerReservations(String customerEmail){
+        Customer c = customerService.getCustomer(customerEmail);
+        return reservationService.getCustomerReservations(c);
     }
 
     public IRoom findARoom(Date checkInDate, Date checkOutDate){
         return null;
     }
+
 }

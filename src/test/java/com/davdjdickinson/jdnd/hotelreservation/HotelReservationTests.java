@@ -2,20 +2,14 @@ package com.davdjdickinson.jdnd.hotelreservation;
 
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
 import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
-import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
-import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
-import com.davidjdickinson.jdnd.hotelreservation.model.Room;
-import com.davidjdickinson.jdnd.hotelreservation.model.RoomType;
+import com.davidjdickinson.jdnd.hotelreservation.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HotelReservationTests {
 
@@ -84,5 +78,43 @@ public class HotelReservationTests {
         HotelResource hotelResource = HotelResource.getInstance();
         IRoom savedRoom = hotelResource.getRoom("100");
         Assertions.assertEquals(savedRoom.getRoomNumber(), "100");
+    }
+
+    @Test
+    @DisplayName("Book a room")
+    public void book_a_room() {
+        addOneRoom("200");
+        HotelResource hotelResource = HotelResource.getInstance();
+        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
+        Customer jill = hotelResource.getCustomer("jill@uphill.com");
+        IRoom room = hotelResource.getRoom("200");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022, 05, 01);
+        Date checkInDate = calendar.getTime();
+        calendar.set(2022, 05, 10);
+        Date checkOutDate = calendar.getTime();
+        hotelResource.bookARoom(jill, room, checkInDate, checkOutDate);
+
+        Collection<Reservation> reservations = hotelResource.getCustomerReservations("jill@uphill.com");
+        Assertions.assertEquals(reservations.size(), 1);
+        Reservation r = reservations.iterator().next();
+        Assertions.assertEquals(r.getCustomer(), jill);
+        Assertions.assertEquals(r.getRoom(), room);
+        Assertions.assertEquals(r.getCheckInDate(), checkInDate);
+        Assertions.assertEquals(r.getCheckOutDate(), checkOutDate);
+
+
+    }
+
+    private void addOneRoom(String roomNumber) {
+        Room room = new Room(roomNumber, 125.0, RoomType.SINGLE );
+        List<IRoom> rooms = new LinkedList<IRoom>();
+        rooms.add(room);
+        AdminResource resource = AdminResource.getInstance();
+        resource.addRoom(rooms);
+    }
+
+    private void createOneCustomer(String first, String last, String email){
+
     }
 }

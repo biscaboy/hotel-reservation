@@ -9,6 +9,7 @@ import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 public class ReservationService {
 
     private static Collection<Reservation> reservations;
+    private static Map<String, Reservation> reservationsMap;
     private static Collection<IRoom> rooms;
     private static ReservationService instance;
     private static Map<String, IRoom> roomMap;
@@ -17,6 +18,7 @@ public class ReservationService {
         roomMap = new HashMap<>();
         rooms = new HashSet<>();
         reservations = new HashSet<>();
+        reservationsMap = new HashMap<>();
     }
 
     public static ReservationService getInstance(){
@@ -38,6 +40,12 @@ public class ReservationService {
     }
 
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
+        Reservation r = new Reservation(customer, room, checkInDate, checkOutDate);
+        if (!reservationsMap.containsKey(r.getId())){
+            reservationsMap.put(r.getId(), r);
+            reservations.add(r);
+            return r;
+        }
         return null;
     }
 
@@ -46,7 +54,13 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getCustomerReservations(Customer customer){
-        return null;
+        Collection<Reservation> customerReservations = new LinkedList<>();
+        for (Reservation r : reservationsMap.values()) {
+            if (r.getCustomer().getEmail().equals(customer.getEmail())){
+                customerReservations.add(r);
+            }
+        }
+        return customerReservations;
     }
 
     public void printAllReservations(){

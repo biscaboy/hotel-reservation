@@ -47,7 +47,7 @@ public class AdminResource {
         return null;
     }
 
-    public void DisplayAllReservations() {
+    public void displayAllReservations() {
 
     }
 }

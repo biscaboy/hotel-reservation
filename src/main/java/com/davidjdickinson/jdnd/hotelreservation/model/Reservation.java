@@ -7,12 +7,14 @@ public class Reservation {
     private IRoom room;
     Date checkInDate;
     Date checkOutDate;
+    private String id;
 
     public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.id = customer + room.getRoomNumber() + checkInDate.hashCode() + checkOutDate.hashCode();
     }
 
     public Customer getCustomer() {
@@ -41,6 +43,11 @@ public class Reservation {
 
     public Date getCheckOutDate() {
         return checkOutDate;
+    }
+
+    public String getId() {
+        return this.id;
+
     }
 
     public void setCheckOutDate(Date checkOutDate) {

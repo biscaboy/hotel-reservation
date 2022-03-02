@@ -9,13 +9,11 @@ import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 public class ReservationService {
 
     private static Map<String, Reservation> reservationsMap;
-    private static Collection<IRoom> rooms;
     private static ReservationService instance;
     private static Map<String, IRoom> roomMap;
 
     private ReservationService(){
         roomMap = new HashMap<>();
-        rooms = new HashSet<>();
         reservationsMap = new HashMap<>();
     }
 
@@ -29,7 +27,6 @@ public class ReservationService {
     public void addRoom(IRoom room){
         if (!roomMap.containsKey(room.getRoomNumber())) {
             roomMap.put(room.getRoomNumber(), room);
-            rooms.add(room);
         }
     }
 
@@ -77,7 +74,7 @@ public class ReservationService {
     }
 
     public Collection<IRoom> getAllRooms(){
-        return new HashSet<IRoom>(rooms);
+        return roomMap.values();
     }
 }
 

@@ -2,17 +2,25 @@ package com.davidjdickinson.jdnd.hotelreservation.cli;
 
 import java.util.Scanner;
 
+/**
+ * Main Program Menu for the Hotel Reservation Application
+ *
+ * This menu displays a menu and processes user selection.
+ * @author David Dickinson
+ * @version 1.0
+ */
+
 public class MainMenu extends CliMenu {
 
-    private static final int RESERVE_A_ROOM = 1;
+    private static final int OPTION_RESERVE_A_ROOM = 1;
     // TODO: abstract the menu for ease of change?
     // private static final String RESERVE_A_ROOM_MSG = "Find and reserve a room";
     // private static final String RESERVE_A_ROOM_METHOD = "";
 
-    private static final int SEE_MY_RESERVATIONS = 2;
-    private static final int CREATE_AN_ACCOUNT = 3;
-    private static final int ADMIN = 4;
-    private static final int EXIT = 5;
+    private static final int OPTION_SEE_MY_RESERVATIONS = 2;
+    private static final int OPTION_CREATE_AN_ACCOUNT = 3;
+    public static final int OPTION_ADMIN = 4;
+    public static final int OPTION_EXIT_PROGRAM = 5;
 
     private static final String menu =
             " =========== MAIN MENU ===========\n" +
@@ -44,12 +52,12 @@ public class MainMenu extends CliMenu {
     public void doOption(int item, Scanner scanner){
 
         switch (item) {
-            case (RESERVE_A_ROOM) :
+            case (OPTION_RESERVE_A_ROOM) :
 
                 break;
-            case (SEE_MY_RESERVATIONS) :
+            case (OPTION_SEE_MY_RESERVATIONS) :
                 break;
-            case (CREATE_AN_ACCOUNT) :
+            case (OPTION_CREATE_AN_ACCOUNT) :
                 break;
         }
     }

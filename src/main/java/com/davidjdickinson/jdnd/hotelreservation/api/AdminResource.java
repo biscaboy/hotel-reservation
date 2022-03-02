@@ -23,23 +23,23 @@ public class AdminResource {
     }
 
     public static AdminResource getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new AdminResource();
         }
         return instance;
     }
 
-    public Customer getCustomer(String email){
+    public Customer getCustomer(String email) {
         return null;
     }
 
-    public void addRoom(List<IRoom> newRooms){
+    public void addRoom(List<IRoom> newRooms) {
         for (IRoom room : newRooms) {
             reservationService.addRoom(room);
         }
     }
 
-    public Collection<IRoom> getAllRooms(){
+    public Collection<IRoom> getAllRooms() {
         return reservationService.getAllRooms();
     }
 

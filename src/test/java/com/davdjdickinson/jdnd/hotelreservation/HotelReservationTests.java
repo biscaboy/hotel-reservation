@@ -3,17 +3,34 @@ package com.davdjdickinson.jdnd.hotelreservation;
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
 import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.IndicativeSentencesGeneration;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.net.InterfaceAddress;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HotelReservationTests {
 
+    @BeforeAll
+    public static void beforeAll() {
+        List<IRoom> rooms = new LinkedList<IRoom>();
+
+        // create 6 rooms (101, 202, 303, ... 606) for increasing prices with even room number as single, odd as double.
+        for (int i = 1; i <= 6; i++ ) {
+            String roomNum = Integer.valueOf(i * 101).toString();
+            Room room = new Room(roomNum, 50.0 * i, i % 2 == 0 ? RoomType.SINGLE : RoomType.DOUBLE);
+            rooms.add(room);
+        }
+        AdminResource resource = AdminResource.getInstance();
+        resource.addRoom(rooms);
+
+        // Three test customers.
+        HotelResource hotelResource = HotelResource.getInstance();
+        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
+        hotelResource.createACustomer("Jack", "Upthehill", "jack@uphill.com");
+        hotelResource.createACustomer("Jerry", "Seinfeld", "jerry@aol.com");
+    }
     @Test
     @DisplayName("Create a customer")
     public void create_a_customer(){
@@ -23,6 +40,24 @@ public class HotelReservationTests {
         assertEquals("Jill", customer.getFirstName());
         assertEquals("Upthehill", customer.getLastName());
         assertEquals("jill@uphill.com", customer.getEmail());
+    }
+
+    @Test
+    @DisplayName("Add duplicate customer")
+    public void add_duplicate_customer(){
+        HotelResource hotelResource = HotelResource.getInstance();
+        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
+        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
+
+        AdminResource ar = AdminResource.getInstance();
+        Collection<Customer> customers = ar.getAllCustomers();
+        int count = 0;
+        for (Customer c : customers) {
+            if (c.getFirstName().equals("Jill")){
+                count++;
+            }
+        }
+        Assertions.assertEquals(1, count);
     }
 
     /**
@@ -82,24 +117,17 @@ public class HotelReservationTests {
     @Test
     @DisplayName("Get a room")
     public void get_a_room(){
-        Room room = new Room("100", 125.0, RoomType.SINGLE );
-        List<IRoom> rooms = new LinkedList<IRoom>();
-        rooms.add(room);
-        AdminResource resource = AdminResource.getInstance();
-        resource.addRoom(rooms);
         HotelResource hotelResource = HotelResource.getInstance();
-        IRoom savedRoom = hotelResource.getRoom("100");
-        Assertions.assertEquals(savedRoom.getRoomNumber(), "100");
+        IRoom savedRoom = hotelResource.getRoom("101");
+        Assertions.assertEquals(savedRoom.getRoomNumber(), "101");
     }
 
     @Test
     @DisplayName("Book a room")
     public void book_a_room() {
-        addOneRoom("200");
         HotelResource hotelResource = HotelResource.getInstance();
-        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
-        Customer jill = hotelResource.getCustomer("jill@uphill.com");
-        IRoom room = hotelResource.getRoom("200");
+        Customer jill = hotelResource.getCustomer("jack@uphill.com");
+        IRoom room = hotelResource.getRoom("202");
         Calendar calendar = Calendar.getInstance();
         calendar.set(2022, 05, 01);
         Date checkInDate = calendar.getTime();
@@ -107,25 +135,18 @@ public class HotelReservationTests {
         Date checkOutDate = calendar.getTime();
         hotelResource.bookARoom(jill, room, checkInDate, checkOutDate);
 
-        Collection<Reservation> reservations = hotelResource.getCustomerReservations("jill@uphill.com");
+        Collection<Reservation> reservations = hotelResource.getCustomerReservations("jack@uphill.com");
         Assertions.assertEquals(reservations.size(), 1);
         Reservation r = reservations.iterator().next();
         Assertions.assertEquals(r.getCustomer(), jill);
         Assertions.assertEquals(r.getRoom(), room);
         Assertions.assertEquals(r.getCheckInDate(), checkInDate);
         Assertions.assertEquals(r.getCheckOutDate(), checkOutDate);
-
-
     }
 
     @Test
     @DisplayName("Get all customers")
     public void get_all_customers() {
-        HotelResource hotelResource = HotelResource.getInstance();
-        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
-        hotelResource.createACustomer("Jack", "Upthehill", "jack@uphill.com");
-        hotelResource.createACustomer("Jerry", "Seinfeld", "jerry@aol.com");
-
         AdminResource ar = AdminResource.getInstance();
         Collection<Customer> customers = ar.getAllCustomers();
         Assertions.assertEquals(3, customers.size());
@@ -134,9 +155,6 @@ public class HotelReservationTests {
     @Test
     @DisplayName("Find a room")
     public void find_a_room(){
-        addOneRoom("100");
-        addOneRoom("200");
-        addOneRoom("300");
         HotelResource hr = HotelResource.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2022, 06, 01);
@@ -145,25 +163,14 @@ public class HotelReservationTests {
         Date checkOutDate = calendar.getTime();
         Collection<IRoom> availableRooms = hr.findARoom(checkInDate, checkOutDate);
 
-        Assertions.assertEquals(3, availableRooms.size());
+        Assertions.assertEquals(6, availableRooms.size());
     }
 
     @Test
     @DisplayName("Filter out date confilcts")
     public void filter_out_date_conflicts(){
-        List<IRoom> rooms = new LinkedList<IRoom>();
-
-        Room room1 = new Room("400", 125.0, RoomType.SINGLE );
-        rooms.add(room1);
-        Room room2 = new Room("500", 125.0, RoomType.SINGLE );
-        rooms.add(room2);
-        Room room3 = new Room("600", 125.0, RoomType.DOUBLE );
-        rooms.add(room3);
-        AdminResource resource = AdminResource.getInstance();
-        resource.addRoom(rooms);
-
         HotelResource hr = HotelResource.getInstance();
-        hr.createACustomer("Kareem", "Jabaar", "no33@lakers.com");
+        IRoom room1 = hr.getRoom("404");
         Customer customer = hr.getCustomer("jill@uphill.com");
         Calendar calendar = Calendar.getInstance();
         calendar.set(2022, 07, 01);
@@ -178,17 +185,15 @@ public class HotelReservationTests {
         calendar.set(2022, 07, 15);
         Date desiredCheckOutDate = calendar.getTime();
 
+        // room 400 has conflicting dates with Jill's reservation so it shouldn't be in the returned list.
         Collection<IRoom> availableRooms = hr.findARoom(desiredCheckInDate, desiredCheckOutDate);
-
-        Assertions.assertEquals(2, availableRooms.size());
-    }
-
-    private void addOneRoom(String roomNumber) {
-        Room room = new Room(roomNumber, 125.0, RoomType.SINGLE );
-        List<IRoom> rooms = new LinkedList<IRoom>();
-        rooms.add(room);
-        AdminResource resource = AdminResource.getInstance();
-        resource.addRoom(rooms);
+        boolean found = false;
+        for (IRoom r : availableRooms) {
+            if (r.getRoomNumber().equals("404")) {
+                found = true;
+            }
+        }
+        Assertions.assertFalse(found);
     }
 
 }

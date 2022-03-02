@@ -13,9 +13,11 @@ public class ReservationService {
     private static Collection<Reservation> reservations;
     private static Collection<IRoom> rooms;
     private static ReservationService instance;
+    private static Collection<String> roomNumbers;
 
     private ReservationService(){
-        rooms = new HashSet<IRoom>();
+        roomNumbers = new HashSet<>();
+        rooms = new HashSet<>();
         reservations = new HashSet<Reservation>();
     }
 
@@ -27,7 +29,10 @@ public class ReservationService {
     }
 
     public void addRoom(IRoom room){
-        rooms.add(room);
+        if (!roomNumbers.contains(room.getRoomNumber())) {
+            roomNumbers.add(room.getRoomNumber());
+            rooms.add(room);
+        }
     }
 
     public IRoom getARoom(String roomId){

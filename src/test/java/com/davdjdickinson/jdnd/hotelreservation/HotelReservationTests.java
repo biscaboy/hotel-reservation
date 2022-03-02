@@ -56,7 +56,18 @@ public class HotelReservationTests {
     @Test
     @DisplayName("Add duplicate room")
     public void add_duplicate_room(){
+        // the system should not allow duplicate rooms to be added.
+        Room room = new Room("100", 125.0, RoomType.SINGLE );
+        Room roomDuplicate = new Room("100", 125.0, RoomType.SINGLE );
+        List<IRoom> rooms = new LinkedList<IRoom>();
+        rooms.add(room);
+        rooms.add(roomDuplicate);
+        AdminResource resource = AdminResource.getInstance();
+        resource.addRoom(rooms);
 
+        Collection<IRoom> savedRooms = resource.getAllRooms();
+        Assertions.assertEquals(1, savedRooms.size());
+        Assertions.assertTrue(savedRooms.contains(room));
     }
 
 }

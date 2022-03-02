@@ -32,9 +32,9 @@ public class Driver {
     private static void testCustomerEmailValidation() {
         try {
             Customer customer = new Customer("first", "second", "email");
-            System.out.println("Email validation failed!");
+            System.out.println("Email validation test: failed!");
         } catch (IllegalArgumentException ex){
-                System.out.println("Email validation successful!");
+                System.out.println("Email validation test: successful!");
             }
         }
 

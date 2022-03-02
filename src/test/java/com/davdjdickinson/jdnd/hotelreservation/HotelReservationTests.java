@@ -5,6 +5,7 @@ import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.IndicativeSentencesGeneration;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -40,14 +41,20 @@ public class HotelReservationTests {
     @DisplayName("Add a room")
     public void add_a_room() {
         Room room = new Room("100", 125.0, RoomType.SINGLE );
+
         List<IRoom> rooms = new LinkedList<IRoom>();
         rooms.add(room);
         AdminResource resource = AdminResource.getInstance();
         resource.addRoom(rooms);
 
         Collection<IRoom> savedRooms = resource.getAllRooms();
-        Assertions.assertEquals(1, savedRooms.size());
-        Assertions.assertTrue(savedRooms.contains(room));
+        IRoom found = null;
+        for (IRoom r : savedRooms) {
+            if (r.getRoomNumber().equals(room.getRoomNumber())) {
+                found = r;
+            }
+        }
+        Assertions.assertNotNull(found);
     }
 
     @Test
@@ -63,8 +70,13 @@ public class HotelReservationTests {
         resource.addRoom(rooms);
 
         Collection<IRoom> savedRooms = resource.getAllRooms();
-        Assertions.assertEquals(1, savedRooms.size());
-        Assertions.assertTrue(savedRooms.contains(room));
+        int numberOfRoomsReturned = 0;
+        for (IRoom r : savedRooms){
+            if (r.getRoomNumber().equals(room.getRoomNumber())){
+                numberOfRoomsReturned++;
+            }
+        }
+        Assertions.assertEquals(1, numberOfRoomsReturned);
     }
 
     @Test
@@ -119,6 +131,58 @@ public class HotelReservationTests {
         Assertions.assertEquals(3, customers.size());
     }
 
+    @Test
+    @DisplayName("Find a room")
+    public void find_a_room(){
+        addOneRoom("100");
+        addOneRoom("200");
+        addOneRoom("300");
+        HotelResource hr = HotelResource.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022, 06, 01);
+        Date checkInDate = calendar.getTime();
+        calendar.set(2022, 06, 10);
+        Date checkOutDate = calendar.getTime();
+        Collection<IRoom> availableRooms = hr.findARoom(checkInDate, checkOutDate);
+
+        Assertions.assertEquals(3, availableRooms.size());
+    }
+
+    @Test
+    @DisplayName("Filter out date confilcts")
+    public void filter_out_date_conflicts(){
+        List<IRoom> rooms = new LinkedList<IRoom>();
+
+        Room room1 = new Room("400", 125.0, RoomType.SINGLE );
+        rooms.add(room1);
+        Room room2 = new Room("500", 125.0, RoomType.SINGLE );
+        rooms.add(room2);
+        Room room3 = new Room("600", 125.0, RoomType.DOUBLE );
+        rooms.add(room3);
+        AdminResource resource = AdminResource.getInstance();
+        resource.addRoom(rooms);
+
+        HotelResource hr = HotelResource.getInstance();
+        hr.createACustomer("Kareem", "Jabaar", "no33@lakers.com");
+        Customer customer = hr.getCustomer("jill@uphill.com");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022, 07, 01);
+        Date checkInDate = calendar.getTime();
+        calendar.set(2022, 07, 10);
+        Date checkOutDate = calendar.getTime();
+
+        hr.bookARoom(customer,room1,checkInDate, checkOutDate);
+
+        calendar.set(2022, 07, 05);
+        Date desiredCheckInDate = calendar.getTime();
+        calendar.set(2022, 07, 15);
+        Date desiredCheckOutDate = calendar.getTime();
+
+        Collection<IRoom> availableRooms = hr.findARoom(desiredCheckInDate, desiredCheckOutDate);
+
+        Assertions.assertEquals(2, availableRooms.size());
+    }
+
     private void addOneRoom(String roomNumber) {
         Room room = new Room(roomNumber, 125.0, RoomType.SINGLE );
         List<IRoom> rooms = new LinkedList<IRoom>();
@@ -127,7 +191,4 @@ public class HotelReservationTests {
         resource.addRoom(rooms);
     }
 
-    private void createOneCustomer(String first, String last, String email){
-
-    }
 }

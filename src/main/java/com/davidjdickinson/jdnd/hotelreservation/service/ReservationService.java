@@ -8,7 +8,6 @@ import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 
 public class ReservationService {
 
-    private static Collection<Reservation> reservations;
     private static Map<String, Reservation> reservationsMap;
     private static Collection<IRoom> rooms;
     private static ReservationService instance;
@@ -17,7 +16,6 @@ public class ReservationService {
     private ReservationService(){
         roomMap = new HashMap<>();
         rooms = new HashSet<>();
-        reservations = new HashSet<>();
         reservationsMap = new HashMap<>();
     }
 
@@ -43,14 +41,25 @@ public class ReservationService {
         Reservation r = new Reservation(customer, room, checkInDate, checkOutDate);
         if (!reservationsMap.containsKey(r.getId())){
             reservationsMap.put(r.getId(), r);
-            reservations.add(r);
             return r;
         }
         return null;
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        return null;
+        Map<String, IRoom> availableRooms = new HashMap<>(roomMap);
+
+        // loop through reservations and find reserved room numbers for date range
+        for (Reservation r : reservationsMap.values()){
+            if (((r.getCheckInDate().after(checkInDate)) &&
+                    (r.getCheckInDate().before(checkOutDate)))
+                ||
+                ((r.getCheckOutDate().after(checkInDate)) &&
+                        (r.getCheckOutDate().before(checkOutDate)))) {
+                availableRooms.remove(r.getRoom().getRoomNumber());
+            }
+        }
+        return availableRooms.values();
     }
 
     public Collection<Reservation> getCustomerReservations(Customer customer){

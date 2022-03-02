@@ -106,6 +106,19 @@ public class HotelReservationTests {
 
     }
 
+    @Test
+    @DisplayName("Get all customers")
+    public void get_all_customers() {
+        HotelResource hotelResource = HotelResource.getInstance();
+        hotelResource.createACustomer("Jill", "Upthehill", "jill@uphill.com");
+        hotelResource.createACustomer("Jack", "Upthehill", "jack@uphill.com");
+        hotelResource.createACustomer("Jerry", "Seinfeld", "jerry@aol.com");
+
+        AdminResource ar = AdminResource.getInstance();
+        Collection<Customer> customers = ar.getAllCustomers();
+        Assertions.assertEquals(3, customers.size());
+    }
+
     private void addOneRoom(String roomNumber) {
         Room room = new Room(roomNumber, 125.0, RoomType.SINGLE );
         List<IRoom> rooms = new LinkedList<IRoom>();

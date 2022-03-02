@@ -2,6 +2,7 @@ package com.davidjdickinson.jdnd.hotelreservation.api;
 
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
+import com.davidjdickinson.jdnd.hotelreservation.service.CustomerService;
 import com.davidjdickinson.jdnd.hotelreservation.service.ReservationService;
 
 import java.util.Collection;
@@ -15,11 +16,13 @@ public class AdminResource {
 
     private static AdminResource instance;
     private static ReservationService reservationService;
+    private static CustomerService customerService;
 
     private static Collection<IRoom> rooms;
 
     private AdminResource() {
         reservationService = ReservationService.getInstance();
+        customerService = CustomerService.getInstance();
     }
 
     public static AdminResource getInstance() {
@@ -44,7 +47,7 @@ public class AdminResource {
     }
 
     public Collection<Customer> getAllCustomers() {
-        return null;
+        return customerService.getAllCustomers();
     }
 
     public void displayAllReservations() {

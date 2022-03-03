@@ -5,6 +5,8 @@ import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -12,6 +14,16 @@ import java.util.regex.Pattern;
  * Main Program Menu for the Hotel Reservation Application
  *
  * This menu displays a menu and processes user selection.
+ *
+ * ===============================================
+ * Credits - sources of my learning in this class:
+ * ===============================================
+ * Excption Handling -
+ *      https://docs.oracle.com/javase/7/docs/technotes/guides/language/catch-multiple.html
+ * RegEx  - https://regexr.com/31p85
+ * Comparing Dates - https://www.javatpoint.com/how-to-compare-dates-in-java
+ * Date vs Calendar - https://stackoverflow.com/questions/1404210/java-date-vs-calendar
+ *
  * @author David Dickinson
  * @version 1.0
  */
@@ -116,6 +128,11 @@ public class MainMenu extends CliMenu {
         Date checkInDate = promptForDate(scanner, PROMPT_ENTER_CHECK_IN_DATE);
         Date checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
 
+        if (checkOutDate.before(checkInDate)){
+            System.out.println("The check-out date is before the check-in date. Please try again.");
+            return;
+        }
+
         // check for available rooms
         Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
         IRoom selectedRoom = promptSelectRoom(scanner, availableRooms);
@@ -219,29 +236,26 @@ public class MainMenu extends CliMenu {
         while (result == null) {
             try {
                 System.out.print(prompt);
-                String date = scanner.nextLine();
+                String inputDate = scanner.nextLine();
                 // did they enter a well formatted date?
-                if (!datePattern.matcher(date).matches()) {
+                if (!datePattern.matcher(inputDate).matches()) {
                     System.out.println(ERROR_DATE_FORMAT);
                     continue;
                 }
-                String [] split = date.split("/");
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Integer.parseInt(split[2]),
-                             Integer.parseInt(split[1]),
-                             Integer.parseInt(split[0]));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");  ;
+                Date selectedDate = dateFormat.parse(inputDate);
                 Date today = new Date();
-                Date selected = calendar.getTime();
-                if (selected.before(today)) {
+
+                // don't save a date in the past, so compare the dates (is selectedDate before today?)
+                if (selectedDate.before(today)) {
                     System.out.println("Please enter a date in the future.");
                     continue;
                 }
-                result = selected;
-            } catch (InputMismatchException inputMismatchException) {
+                result = selectedDate;
+            } catch (InputMismatchException | NullPointerException | ParseException exception) {
                 System.out.println(ERROR_DATE_FORMAT);
             }
         }
         return result;
     }
 }
-/02/

@@ -74,14 +74,15 @@ public class ReservationService {
         int count = 1;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for (Reservation r : reservationsMap.values()) {
-            String line = count + ". Email: " + r.getCustomer().getEmail() +
-                    " | Room: " + r.getRoom().getRoomNumber() +
-                    " | Check In: " + formatter.format(r.getCheckInDate()) +
-                    " | Check Out: " + formatter.format(r.getCheckOutDate());
+            String line = count + r.toString();
             System.out.println(line);
             count++;
         }
 
+    }
+
+    public Collection<Reservation> getAllReservations(){
+        return reservationsMap.values();
     }
 
     public Collection<IRoom> getAllRooms(){

@@ -11,8 +11,8 @@ import java.util.Scanner;
  * The program displays a main menu and an admim menu for
  * users to manage a hotel with rooms, customers and reservations.
  *
- * Special thanks to Makoto for his/her/their answer on StackOverflow:
- *  https://stackoverflow.com/questions/10604125/how-can-i-clear-the-scanner-buffer-in-java
+ * Special thanks to Rohit Jain for answering a question on Scanner.nextInt() and new lines.
+ *  See: https://stackoverflow.com/questions/13102045/scanner-is-skipping-nextline-after-using-next-or-nextfoo
  *
  * @author David Dickinson
  * @version 1.0
@@ -32,7 +32,7 @@ public class HotelApplication {
                 menu.displayMenu();
                 menu.displayMainPrompt();
 
-                selectedMenuOption = scanner.nextInt();
+                selectedMenuOption = Integer.parseInt(scanner.nextLine());
 
                 if (selectedMenuOption < CliMenu.OPTION_MIN || selectedMenuOption > CliMenu.OPTION_MAX) {
                     System.out.println(selectedMenuOption + " is not an option.  Please try again.");
@@ -58,7 +58,6 @@ public class HotelApplication {
 
             } catch (Exception ex) {
                 System.out.println("Unable to read input.  Please try again.");
-                scanner.nextLine();
                 continue;
             }
         }

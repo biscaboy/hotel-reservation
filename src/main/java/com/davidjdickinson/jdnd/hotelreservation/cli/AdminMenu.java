@@ -1,7 +1,6 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
-import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Room;
 import com.davidjdickinson.jdnd.hotelreservation.model.RoomType;
@@ -34,7 +33,7 @@ public class AdminMenu extends CliMenu {
     private static final String PROMPT_ENTER_A_ROOM_NUMBER = "Enter a room number: ";
     private static final String PROMPT_ENTER_A_ROOM_RATE = "Enter a room rate (e.g. 200.00): ";
     private static final String PROMPT_ENTER_A_ROOM_TYPE =
-            "Enter a room number: \n" + "" +
+            "Enter a room type: \n" + "" +
             "( Enter 1 for SINGLE, 2 for DOUBLE ): ";
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
@@ -67,17 +66,13 @@ public class AdminMenu extends CliMenu {
         // TODO: Add these actions.
         switch (item) {
             case (OPTION_ALL_CUSTOMERS) :
-                for (Customer c : adminResource.getAllCustomers()){
-                    System.out.println(c.toString());
-                }
+                doShowAll(adminResource.getAllCustomers());
                 break;
             case (OPTION_SEE_ALL_ROOMS) :
-                for (IRoom r : adminResource.getAllRooms()) {
-                    System.out.println(r.toString());
-                }
+                doShowAll(adminResource.getAllRooms());
                 break;
             case (OPTION_SEE_ALL_RESERVATIONS) :
-                adminResource.displayAllReservations();
+                doShowAll(adminResource.getAllReservations());
                 break;
             case (OPTION_ADD_A_ROOM) :
                 adminResource.addRoom(promptForRooms(scanner));
@@ -86,6 +81,16 @@ public class AdminMenu extends CliMenu {
                 break;
             default :
                 System.out.println(ERROR_ENTRY_NOT_AN_OPTION);
+        }
+    }
+
+    private void doShowAll(Collection collection) {
+        if (collection.isEmpty()) {
+            System.out.println("No results to display.");
+        } else {
+            for (Object o : collection) {
+                System.out.println(o.toString());
+            }
         }
     }
 
@@ -110,7 +115,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             try {
                 System.out.print(PROMPT_ADD_ANOTHER_ROOM);
-                String yesNoResponse = scanner.next().toUpperCase();
+                String yesNoResponse = scanner.nextLine().toUpperCase();
                 // did they enter a Y or N?
                 if (yesNoResponse.length() != 1 ||
                         (!(yesNoResponse.startsWith("Y") || yesNoResponse.startsWith("N")))) {
@@ -133,7 +138,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.println(PROMPT_ENTER_A_ROOM_TYPE);
             try {
-                int type = scanner.nextInt();
+                int type = Integer.parseInt(scanner.nextLine());
                 if (type != 1 && type !=2){
                     System.out.println(ERROR_TYPE_IS_NOT_VALID);
                     continue;
@@ -154,7 +159,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.print(PROMPT_ENTER_A_ROOM_RATE);
             try {
-                roomRate = scanner.nextDouble();
+                roomRate = Double.parseDouble(scanner.nextLine());
                 break;
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ENTRY_IS_NOT_A_NUMBER);
@@ -169,7 +174,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.print(PROMPT_ENTER_A_ROOM_NUMBER);
             try {
-                roomNumber = scanner.nextInt();
+                roomNumber = Integer.parseInt(scanner.nextLine());
                 if (!(roomNumber >= 100 && roomNumber < 1000)) {
                     System.out.println(ERROR_ROOM_NUMBER_NOT_IN_RANGE);
                     roomNumber = 0;

@@ -1,5 +1,6 @@
 package com.davidjdickinson.jdnd.hotelreservation.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Reservation {
@@ -56,11 +57,10 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation for " +
-                "Customer: " + customer +
-                ", Room #: " + room.getRoomNumber() +
-                ", Check In Date: " + checkInDate +
-                ", Check Out Date: " + checkOutDate +
-                '}';
-    }
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return "Email: " + this.getCustomer().getEmail() +
+                    " | Room: " + this.getRoom().getRoomNumber() +
+                    " | Check In: " + formatter.format(this.getCheckInDate()) +
+                    " | Check Out: " + formatter.format(this.getCheckOutDate());
+        }
 }

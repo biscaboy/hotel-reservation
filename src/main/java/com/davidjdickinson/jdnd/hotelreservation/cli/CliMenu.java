@@ -31,7 +31,7 @@ public abstract class CliMenu {
         while (true) {
             try {
                 System.out.print(prompt);
-                String yesNoResponse = scanner.next().toUpperCase();
+                String yesNoResponse = scanner.nextLine().toUpperCase();
                 // did they enter a Y or N?
                 if (yesNoResponse.length() != 1 ||
                         (!(yesNoResponse.startsWith("Y") || yesNoResponse.startsWith("N")))) {
@@ -54,7 +54,7 @@ public abstract class CliMenu {
         while (true) {
             try {
                 System.out.print(prompt);
-                String input = scanner.next();
+                String input = scanner.nextLine();
                 return input;
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ENTRY_FORMAT);

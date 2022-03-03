@@ -107,7 +107,7 @@ public class MainMenu extends CliMenu {
         if (c == null) {
             System.out.println("Your account could not be created.\n Please try again.");
         }
-        System.out.println("Thank you. Account Created: " + c.toString());
+        System.out.println("Account Created: " + c.toString());
         return email;
     }
 
@@ -135,7 +135,7 @@ public class MainMenu extends CliMenu {
         if (reservation == null) {
             System.out.println("Your reservation was unsuccessful.  Please try again.");
         } else {
-            System.out.println("Thank you.  Your reservation was successful.  Details: " + reservation.toString());
+            System.out.println("Your reservation was successful.  \nDetails: " + reservation.toString());
         }
 
     }
@@ -167,7 +167,7 @@ public class MainMenu extends CliMenu {
     private String promptForAccount(Scanner scanner) {
         String email = null;
         // do you have an account with us?
-        boolean hasAccount = prompForYesOrNo(scanner, "Do you have an account (Y or N)?");
+        boolean hasAccount = prompForYesOrNo(scanner, "Do you have an account (Y or N)? ");
 
         if (!hasAccount) {
             // create an account
@@ -184,7 +184,7 @@ public class MainMenu extends CliMenu {
             customer = hotelResource.getCustomer(email);
             if (customer == null) {
                 System.out.println("Your email address could not be found.");
-                boolean tryAgain = prompForYesOrNo(scanner, "Would you like to try again? (Enter Y or N):");
+                boolean tryAgain = prompForYesOrNo(scanner, "Would you like to try again? (Enter Y or N): ");
                 if (tryAgain) {
                     email = promptInput(scanner, "Please enter your email address: ");
                     continue;
@@ -198,14 +198,14 @@ public class MainMenu extends CliMenu {
         while (true) {
             try {
                 System.out.print(PROMPT_ENTER_ROOM_NUMBER);
-                String roomNumber = scanner.next();
+                String roomNumber = scanner.nextLine();
                 // did they enter a valid room number?
                 for (IRoom room : availableRooms){
                     if (room.getRoomNumber().equals(roomNumber)) {
                         return room;
                     }
                 }
-                System.out.println(ERROR_NO_ROOMS_AVAILABLE);
+                System.out.println("Room " + roomNumber + " is not available.  Please select a room from the list.");
 
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ROOM_NUMBER_ENTRY);
@@ -213,13 +213,13 @@ public class MainMenu extends CliMenu {
 
         }
     }
-
+    // TODO: only dates in the future.
     private Date promptForDate(Scanner scanner, String prompt) {
         Date result = null;
         while (result == null) {
             try {
                 System.out.print(prompt);
-                String date = scanner.next();
+                String date = scanner.nextLine();
                 // did they enter a well formatted date?
                 if (!datePattern.matcher(date).matches()) {
                     System.out.println(ERROR_DATE_FORMAT);
@@ -230,7 +230,13 @@ public class MainMenu extends CliMenu {
                 calendar.set(Integer.parseInt(split[2]),
                              Integer.parseInt(split[1]),
                              Integer.parseInt(split[0]));
-                result = calendar.getTime();
+                Date today = new Date();
+                Date selected = calendar.getTime();
+                if (selected.before(today)) {
+                    System.out.println("Please enter a date in the future.");
+                    continue;
+                }
+                result = selected;
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_DATE_FORMAT);
             }
@@ -238,3 +244,4 @@ public class MainMenu extends CliMenu {
         return result;
     }
 }
+/02/

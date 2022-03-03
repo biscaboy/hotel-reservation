@@ -54,4 +54,8 @@ public class AdminResource {
     public void displayAllReservations() {
         reservationService.printAllReservations();
     }
+
+    public Collection<Reservation> getAllReservations() {
+        return reservationService.getAllReservations();
+    }
 }

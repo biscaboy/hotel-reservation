@@ -1,6 +1,7 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
+import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Room;
 import com.davidjdickinson.jdnd.hotelreservation.model.RoomType;
@@ -22,11 +23,13 @@ public class AdminMenu extends CliMenu {
     private static final int OPTION_ADD_A_ROOM = 4;
     private static final int OPTION_EXIT_ADMIN = 5;
     private static final String menu =
+            " =========== ADMIN MENU ==========\n" +
             " 1. See all customers \n" +
             " 2. See all rooms \n" +
             " 3. See all reservations \n" +
             " 4. Add a room \n" +
-            " 5. Back to main menu";
+            " 5. Back to main menu \n" +
+            "=================================";
 
     private static final String PROMPT_ENTER_A_ROOM_NUMBER = "Enter a room number: ";
     private static final String PROMPT_ENTER_A_ROOM_RATE = "Enter a room rate (e.g. 200.00): ";
@@ -36,7 +39,6 @@ public class AdminMenu extends CliMenu {
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
     private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Try again.";
-    private static final String ERROR_ENTER_Y_OR_NO = "Please enter Y or N.";
     private static final String ERROR_ROOM_NUMBER_NOT_IN_RANGE = "Please enter a number between 100 and 999. ";
     private static final String ERROR_ENTRY_IS_NOT_A_NUMBER = "Error: your entry is not a number.";
     private static final String ERROR_TYPE_IS_NOT_VALID = "Your entry is not 1 or 2. Please try again.";
@@ -65,10 +67,17 @@ public class AdminMenu extends CliMenu {
         // TODO: Add these actions.
         switch (item) {
             case (OPTION_ALL_CUSTOMERS) :
+                for (Customer c : adminResource.getAllCustomers()){
+                    System.out.println(c.toString());
+                }
                 break;
             case (OPTION_SEE_ALL_ROOMS) :
+                for (IRoom r : adminResource.getAllRooms()) {
+                    System.out.println(r.toString());
+                }
                 break;
             case (OPTION_SEE_ALL_RESERVATIONS) :
+                adminResource.displayAllReservations();
                 break;
             case (OPTION_ADD_A_ROOM) :
                 adminResource.addRoom(promptForRooms(scanner));

@@ -230,7 +230,7 @@ public class MainMenu extends CliMenu {
 
         }
     }
-    // TODO: only dates in the future.
+
     private Date promptForDate(Scanner scanner, String prompt) {
         Date result = null;
         while (result == null) {

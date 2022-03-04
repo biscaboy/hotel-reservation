@@ -63,7 +63,6 @@ public class AdminMenu extends CliMenu {
 
     public void doOption(int item, Scanner scanner){
 
-        // TODO: Add these actions.
         switch (item) {
             case (OPTION_ALL_CUSTOMERS) :
                 doShowAll(adminResource.getAllCustomers());

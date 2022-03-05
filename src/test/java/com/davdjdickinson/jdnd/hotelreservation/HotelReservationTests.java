@@ -128,9 +128,9 @@ public class HotelReservationTests {
         IRoom room = hotelResource.getRoom("202");
         Calendar calendar = Calendar.getInstance();
         calendar.set(2022, 05, 01);
-        Date checkInDate = calendar.getTime();
+        ReservationDate checkInDate = new ReservationDate(calendar.getTime());
         calendar.set(2022, 05, 10);
-        Date checkOutDate = calendar.getTime();
+        ReservationDate checkOutDate = new ReservationDate(calendar.getTime());
         hotelResource.bookARoom(jill, room, checkInDate, checkOutDate);
 
         Collection<Reservation> reservations = hotelResource.getCustomerReservations("jack@uphill.com");
@@ -156,9 +156,9 @@ public class HotelReservationTests {
         HotelResource hr = HotelResource.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2022, 06, 01);
-        Date checkInDate = calendar.getTime();
+        ReservationDate checkInDate = new ReservationDate(calendar.getTime());
         calendar.set(2022, 06, 10);
-        Date checkOutDate = calendar.getTime();
+        ReservationDate checkOutDate = new ReservationDate(calendar.getTime());
         Collection<IRoom> availableRooms = hr.findARoom(checkInDate, checkOutDate);
 
         Assertions.assertEquals(6, availableRooms.size());
@@ -176,12 +176,12 @@ public class HotelReservationTests {
         calendar.set(2022, 07, 10);
         Date checkOutDate = calendar.getTime();
 
-        hr.bookARoom(customer,room1,checkInDate, checkOutDate);
+        hr.bookARoom(customer,room1,new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
 
         calendar.set(2022, 07, 05);
-        Date desiredCheckInDate = calendar.getTime();
+        ReservationDate desiredCheckInDate = new ReservationDate(calendar.getTime());
         calendar.set(2022, 07, 15);
-        Date desiredCheckOutDate = calendar.getTime();
+        ReservationDate desiredCheckOutDate = new ReservationDate(calendar.getTime());
 
         // room 400 has conflicting dates with Jill's reservation so it shouldn't be in the returned list.
         Collection<IRoom> availableRooms = hr.findARoom(desiredCheckInDate, desiredCheckOutDate);

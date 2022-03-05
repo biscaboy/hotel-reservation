@@ -4,9 +4,9 @@ import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
+import com.davidjdickinson.jdnd.hotelreservation.model.ReservationDate;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -37,9 +37,8 @@ public class MainMenu extends CliMenu {
     private static final Pattern datePattern = Pattern.compile(
             "(0?[1-9]|1[012])[\\/\\-](0?[1-9]|[12][0-9]|3[01])" +
             "[\\/\\-]\\d{4}( \\d{1,2}[:-]\\d{2}([:-]\\d{2,3})*)?");
-    private static final String DATE_ENTRY_FORMAT = "MM/dd/yyyy";
-    private static final int OPTION_RESERVE_A_ROOM = 1;
 
+    private static final int OPTION_RESERVE_A_ROOM = 1;
     private static final int OPTION_SEE_MY_RESERVATIONS = 2;
     private static final int OPTION_CREATE_AN_ACCOUNT = 3;
     public static final int OPTION_ADMIN = 4;
@@ -140,8 +139,8 @@ public class MainMenu extends CliMenu {
 
     private void doReserveARoom(Scanner scanner) {
         // prompt the user for dates
-        Date checkInDate = promptForDate(scanner, PROMPT_ENTER_CHECK_IN_DATE);
-        Date checkOutDate = null;
+        ReservationDate checkInDate = promptForDate(scanner, PROMPT_ENTER_CHECK_IN_DATE);
+        ReservationDate checkOutDate = null;
         while(true) {
             checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
 
@@ -250,8 +249,8 @@ public class MainMenu extends CliMenu {
         }
     }
 
-    private Date promptForDate(Scanner scanner, String prompt) {
-        Date result = null;
+    private ReservationDate promptForDate(Scanner scanner, String prompt) {
+        ReservationDate result = null;
         while (result == null) {
             try {
                 System.out.print(prompt);
@@ -261,9 +260,8 @@ public class MainMenu extends CliMenu {
                     System.out.println(ERROR_DATE_FORMAT);
                     continue;
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_ENTRY_FORMAT);  ;
-                Date selectedDate = dateFormat.parse(inputDate);
-                Date today = new Date();
+                ReservationDate selectedDate = new ReservationDate(inputDate);
+                ReservationDate today = new ReservationDate();
 
                 // don't save a date in the past, so compare the dates (is selectedDate before today?)
                 if (selectedDate.before(today)) {

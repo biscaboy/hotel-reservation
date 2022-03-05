@@ -6,6 +6,7 @@ import java.util.*;
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
+import com.davidjdickinson.jdnd.hotelreservation.model.ReservationDate;
 
 public class ReservationService {
 
@@ -35,7 +36,7 @@ public class ReservationService {
         return roomMap.get(roomId);
     }
 
-    public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
+    public Reservation reserveARoom(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate){
         Reservation r = new Reservation(customer, room, checkInDate, checkOutDate);
         if (!reservationsMap.containsKey(r.getId())){
             reservationsMap.put(r.getId(), r);
@@ -44,16 +45,12 @@ public class ReservationService {
         return null;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+    public Collection<IRoom> findRooms(ReservationDate checkInDate, ReservationDate checkOutDate){
         Map<String, IRoom> availableRooms = new HashMap<>(roomMap);
 
         // loop through reservations and find reserved room numbers for date range
         for (Reservation r : reservationsMap.values()){
-            if (((r.getCheckInDate().after(checkInDate)) &&
-                    (r.getCheckInDate().before(checkOutDate)))
-                ||
-                ((r.getCheckOutDate().after(checkInDate)) &&
-                        (r.getCheckOutDate().before(checkOutDate)))) {
+            if (r.hasConflict(checkInDate, checkOutDate)) {
                 availableRooms.remove(r.getRoom().getRoomNumber());
             }
         }

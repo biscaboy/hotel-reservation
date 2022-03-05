@@ -6,16 +6,16 @@ import java.util.Date;
 public class Reservation {
     private Customer customer;
     private IRoom room;
-    Date checkInDate;
-    Date checkOutDate;
+    ReservationDate checkInDate;
+    ReservationDate checkOutDate;
     private String id;
 
-    public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+    public Reservation(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate) {
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        this.id = customer + room.getRoomNumber() + checkInDate.hashCode() + checkOutDate.hashCode();
+        this.id = customer + room.getRoomNumber() + this.checkInDate.getId() + this.checkOutDate.getId();
     }
 
     public Customer getCustomer() {
@@ -30,19 +30,11 @@ public class Reservation {
         return room;
     }
 
-    public void setRoom(IRoom room) {
-        this.room = room;
-    }
-
-    public Date getCheckInDate() {
+    public ReservationDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
-        this.checkInDate = checkInDate;
-    }
-
-    public Date getCheckOutDate() {
+    public ReservationDate getCheckOutDate() {
         return checkOutDate;
     }
 
@@ -51,16 +43,28 @@ public class Reservation {
 
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
-        this.checkOutDate = checkOutDate;
-    }
-
     @Override
     public String toString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         return "Email: " + this.getCustomer().getEmail() +
                     " | Room: " + this.getRoom().getRoomNumber() +
-                    " | Check In: " + formatter.format(this.getCheckInDate()) +
-                    " | Check Out: " + formatter.format(this.getCheckOutDate());
+                    " | Check In: " + this.getCheckInDate().toString() +
+                    " | Check Out: " + this.getCheckOutDate().toString();
         }
+
+    public boolean hasConflict(ReservationDate checkInDate, ReservationDate checkOutDate) {
+        // if either date matches a date on this reservation there is a conflict.
+        if (this.checkInDate.equals(checkInDate) ||
+                this.checkInDate.equals(checkOutDate) ||
+                this.checkOutDate.equals(checkInDate) ||
+                this.checkOutDate.equals(checkOutDate)) {
+            return true;
+        };
+
+        // if either date is in between the dates of this reservation there is a conflict.
+        if ((this.checkInDate.after(checkInDate) && this.checkInDate.before(checkOutDate)) ||
+                (this.checkOutDate.after(checkInDate) && this.checkOutDate.before(checkOutDate))) {
+            return true;
+        }
+        return false;
+    }
 }

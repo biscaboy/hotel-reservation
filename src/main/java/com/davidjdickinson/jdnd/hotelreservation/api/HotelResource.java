@@ -3,6 +3,7 @@ package com.davidjdickinson.jdnd.hotelreservation.api;
 import com.davidjdickinson.jdnd.hotelreservation.model.Customer;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Reservation;
+import com.davidjdickinson.jdnd.hotelreservation.model.ReservationDate;
 import com.davidjdickinson.jdnd.hotelreservation.service.CustomerService;
 import com.davidjdickinson.jdnd.hotelreservation.service.ReservationService;
 
@@ -39,8 +40,8 @@ public class HotelResource {
         return reservationService.getARoom(roomNumber);
     }
 
-    public Reservation bookARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
-        return reservationService.reserveARoom(customer, room, checkInDate,checkOutDate);
+    public Reservation bookARoom(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate){
+        return reservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
 
     }
 
@@ -49,7 +50,7 @@ public class HotelResource {
         return reservationService.getCustomerReservations(c);
     }
 
-    public Collection<IRoom> findARoom(Date checkInDate, Date checkOutDate){
+    public Collection<IRoom> findARoom(ReservationDate checkInDate, ReservationDate checkOutDate){
         return reservationService.findRooms(checkInDate, checkOutDate);
     }
 

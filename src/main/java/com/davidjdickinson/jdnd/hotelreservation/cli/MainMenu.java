@@ -235,7 +235,7 @@ public class MainMenu extends CliMenu {
         while (true) {
             try {
                 System.out.print(PROMPT_ENTER_ROOM_NUMBER);
-                String roomNumber = scanner.nextLine();
+                String roomNumber = scanner.nextLine().trim();
                 // did they enter a valid room number?
                 for (IRoom room : availableRooms){
                     if (room.getRoomNumber().equals(roomNumber)) {
@@ -256,7 +256,7 @@ public class MainMenu extends CliMenu {
         while (result == null) {
             try {
                 System.out.print(prompt);
-                String inputDate = scanner.nextLine();
+                String inputDate = scanner.nextLine().trim();
                 // did they enter a well formatted date?
                 if (!datePattern.matcher(inputDate).matches()) {
                     System.out.println(ERROR_DATE_FORMAT);

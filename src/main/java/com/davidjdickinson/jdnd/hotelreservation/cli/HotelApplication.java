@@ -35,7 +35,7 @@ public class HotelApplication {
                 menu.displayMenu();
                 menu.displayMainPrompt();
 
-                selectedMenuOption = Integer.parseInt(scanner.nextLine());
+                selectedMenuOption = Integer.parseInt(scanner.nextLine().trim());
 
                 if (selectedMenuOption < CliMenu.OPTION_MIN || selectedMenuOption > CliMenu.OPTION_MAX) {
                     System.out.println(selectedMenuOption + " is not an option.  Please try again.");

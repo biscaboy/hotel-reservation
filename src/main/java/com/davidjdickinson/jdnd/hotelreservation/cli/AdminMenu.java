@@ -114,7 +114,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.println(PROMPT_ENTER_A_ROOM_TYPE);
             try {
-                int type = Integer.parseInt(scanner.nextLine());
+                int type = Integer.parseInt(scanner.nextLine().trim());
                 if (type != 1 && type !=2){
                     System.out.println(ERROR_TYPE_IS_NOT_VALID);
                     continue;
@@ -135,7 +135,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.print(PROMPT_ENTER_A_ROOM_RATE);
             try {
-                roomRate = Double.parseDouble(scanner.nextLine());
+                roomRate = Double.parseDouble(scanner.nextLine().trim());
                 break;
             } catch (InputMismatchException | NumberFormatException exception) {
                 System.out.println(ERROR_ENTRY_IS_NOT_A_NUMBER);
@@ -150,7 +150,7 @@ public class AdminMenu extends CliMenu {
         while (true) {
             System.out.print(PROMPT_ENTER_A_ROOM_NUMBER);
             try {
-                roomNumber = Integer.parseInt(scanner.nextLine());
+                roomNumber = Integer.parseInt(scanner.nextLine().trim());
                 if (!(roomNumber >= 100 && roomNumber < 1000)) {
                     System.out.println(ERROR_ROOM_NUMBER_NOT_IN_RANGE);
                     continue;

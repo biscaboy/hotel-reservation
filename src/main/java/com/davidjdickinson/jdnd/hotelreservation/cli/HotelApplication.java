@@ -16,7 +16,7 @@ import java.util.Scanner;
  *
  * Special thanks to baeldung.com for information on building a jar file with Maven.
  *  See: https://www.baeldung.com/executable-jar-with-maven
- *  
+ *
  * @author David Dickinson
  * @version 1.0
  */

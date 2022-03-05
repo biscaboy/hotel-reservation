@@ -37,6 +37,8 @@ public class AdminMenu extends CliMenu {
             "( Enter 1 for SINGLE, 2 for DOUBLE ): ";
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
+    private static final String MSG_NO_RESULTS = "There were no results to display.";
+
     private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Try again.";
     private static final String ERROR_ROOM_NUMBER_NOT_IN_RANGE = "Please enter a number between 100 and 999. ";
     private static final String ERROR_ENTRY_IS_NOT_A_NUMBER = "Error: your entry is not a number.";
@@ -85,7 +87,7 @@ public class AdminMenu extends CliMenu {
 
     private void doShowAll(Collection collection) {
         if (collection.isEmpty()) {
-            System.out.println("No results to display.");
+            System.out.println(MSG_NO_RESULTS);
         } else {
             for (Object o : collection) {
                 System.out.println(o.toString());

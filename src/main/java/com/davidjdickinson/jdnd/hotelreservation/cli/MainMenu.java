@@ -34,24 +34,40 @@ public class MainMenu extends CliMenu {
      * Thanks to RegExr for the community patters.
      * The pattern below was found in the community date patters at https://regexr.com/31p85.
      */
-    private static Pattern datePattern = Pattern.compile(
+    private static final Pattern datePattern = Pattern.compile(
             "(0?[1-9]|1[012])[\\/\\-](0?[1-9]|[12][0-9]|3[01])" +
             "[\\/\\-]\\d{4}( \\d{1,2}[:-]\\d{2}([:-]\\d{2,3})*)?");
+    private static final String DATE_ENTRY_FORMAT = "MM/dd/yyyy";
     private static final int OPTION_RESERVE_A_ROOM = 1;
 
     private static final int OPTION_SEE_MY_RESERVATIONS = 2;
     private static final int OPTION_CREATE_AN_ACCOUNT = 3;
     public static final int OPTION_ADMIN = 4;
-    public static final int OPTION_EXIT_PROGRAM = 5;
 
     public static final String PROMPT_ENTER_ROOM_NUMBER = "Please enter the room number from the list to reserve: ";
     public static final String PROMPT_SAVE_RESERVATION = "Make the reservation? (Enter Y or N): ";
     public static final String PROMPT_ENTER_CHECK_IN_DATE = "Please enter the Check-in date (mm/dd/yyyy): ";
     public static final String PROMPT_ENTER_CHECK_OUT_DATE = "Please enter the Check-out date (mm/dd/yyyy): ";
+    public static final String PROMPT_ENTER_EMAIL = "Please enter your email address: ";
+    public static final String PROMPT_ENTER_FIRST_NAME = "Please enter your first name: ";
+    public static final String PROMPT_ENTER_LAST_NAME = "Please enter your last name: ";
+    public static final String PROMPT_HAVE_ACCOUNT = "Do you have an account (Y or N)? ";
+    public static final String PROMPT_TRY_AGAIN = "Would you like to try again? (Enter Y or N): ";
+
+    public static final String MSG_RESERVATION_NOT_FOUND = "Sorry, no reservations were found for %s.%n";
+    public static final String MSG_RESERVATION_FOUND = "Reservation%s found for %s.%n";
+    public static final String MSG_ACCOUNT_CREATED = "Account Created: %s%n";
+    public static final String MSG_ROOM_NOT_AVAILABLE = "Room %s is not available.  Please select a room from the list.%n";
+    public static final String MSG_SUCCESSFUL_RESERVATION = "Your reservation was successful.  %nReservation details:%s%n ";
 
     public static final String ERROR_DATE_FORMAT = "The date needs to entered as mm/dd/yyyy.";
     public static final String ERROR_ROOM_NUMBER_ENTRY = "Please enter the room number as it appears in the list.";
     public static final String ERROR_NO_ROOMS_AVAILABLE = "There are no rooms available for those dates.";
+    public static final String ERROR_ACCOUNT_NOT_CREATED = "Your account could not be created.\n Please try again.";
+    public static final String ERROR_ACCOUNT_NOT_FOUNT = "Your email address could not be found.";
+    public static final String ERROR_PAST_DATE = "Please enter a date in the future.";
+    public static final String ERROR_PAST_CHECKOUT_DATE = "The check-out date is before the check-in date. Please try again.";
+    public static final String ERROR_UNSUCCESSFUL_RESERVATION = "Your reservation was unsuccessful.  Please try again.";
 
     private static final String menu =
             " =========== MAIN MENU ===========\n" +
@@ -96,14 +112,14 @@ public class MainMenu extends CliMenu {
     }
 
     private void doShowReservations(Scanner scanner) {
-        String email = promptInput(scanner, "Please enter your email address: ");
+        String email = promptInput(scanner, PROMPT_ENTER_EMAIL);
         Collection<Reservation> reservations = hotelResource.getCustomerReservations(email);
 
         if (reservations.isEmpty()) {
-            System.out.println("Sorry, no reservations were found for " + email + ".");
+            System.out.printf(MSG_RESERVATION_NOT_FOUND, email);
         } else {
             String suffix = reservations.size() > 1 ? "s" : "";
-            System.out.println("Reservation" + suffix + " found for " + email + ":");
+            System.out.printf(MSG_RESERVATION_FOUND, suffix, email);
             for (Reservation r : reservations) {
                 r.toString();
             }
@@ -111,15 +127,15 @@ public class MainMenu extends CliMenu {
     }
 
     private String doCreateAccount(Scanner scanner) {
-        String email = promptInput(scanner, "Please enter your email address: ");
-        String firstName = promptInput(scanner, "Please enter your first name: ");
-        String lastName = promptInput(scanner, "Please enter your last name: ");
+        String email = promptInput(scanner, PROMPT_ENTER_EMAIL);
+        String firstName = promptInput(scanner, PROMPT_ENTER_FIRST_NAME);
+        String lastName = promptInput(scanner, PROMPT_ENTER_LAST_NAME);
         hotelResource.createACustomer(firstName,lastName,email);
         Customer c = hotelResource.getCustomer(email);
         if (c == null) {
-            System.out.println("Your account could not be created.\n Please try again.");
+            System.out.println(ERROR_ACCOUNT_NOT_CREATED);
         }
-        System.out.println("Account Created: " + c.toString());
+        System.out.printf(MSG_ACCOUNT_CREATED, c.toString());
         return email;
     }
 
@@ -129,7 +145,7 @@ public class MainMenu extends CliMenu {
         Date checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
 
         if (checkOutDate.before(checkInDate)){
-            System.out.println("The check-out date is before the check-in date. Please try again.");
+            System.out.println(ERROR_PAST_CHECKOUT_DATE);
             return;
         }
 
@@ -137,24 +153,26 @@ public class MainMenu extends CliMenu {
         Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
         IRoom selectedRoom = promptSelectRoom(scanner, availableRooms);
         if (selectedRoom == null) {
-            System.out.println("Your reservation was unsuccessful.  Please try again.");
+            System.out.println(ERROR_UNSUCCESSFUL_RESERVATION);
             return;
         }
 
         String email = promptForAccount(scanner);
         Customer customer = promptForCustomer(scanner, email);
         if (customer == null) {
-            System.out.println("Your reservation was unsuccessful.  Please try again.");
+            System.out.println(ERROR_UNSUCCESSFUL_RESERVATION);
             return;
         }
 
-        Reservation reservation = hotelResource.bookARoom(customer, selectedRoom, checkInDate, checkOutDate );
-        if (reservation == null) {
-            System.out.println("Your reservation was unsuccessful.  Please try again.");
-        } else {
-            System.out.println("Your reservation was successful.  \nDetails: " + reservation.toString());
-        }
-
+        boolean saveReservation = prompForYesOrNo(scanner, PROMPT_SAVE_RESERVATION);
+        if (saveReservation) {
+            Reservation reservation = hotelResource.bookARoom(customer, selectedRoom, checkInDate, checkOutDate );
+            if (reservation == null) {
+                System.out.println(ERROR_UNSUCCESSFUL_RESERVATION);
+            } else {
+                System.out.printf(MSG_SUCCESSFUL_RESERVATION, reservation.toString());
+            }
+        } 
     }
 
     private IRoom promptSelectRoom(Scanner scanner, Collection<IRoom> availableRooms) {
@@ -163,7 +181,6 @@ public class MainMenu extends CliMenu {
         if (availableRooms.isEmpty())  {
             System.out.println(ERROR_NO_ROOMS_AVAILABLE);
         } else {
-            System.out.println("Available rooms: ");
             for (IRoom r : availableRooms) {
                 System.out.println(r.toString());
             }
@@ -176,7 +193,6 @@ public class MainMenu extends CliMenu {
                     selectedRoom = r;
                 }
             }
-            System.out.println("You've selected:  " + selectedRoom.toString());
         }
         return selectedRoom;
     }
@@ -184,13 +200,13 @@ public class MainMenu extends CliMenu {
     private String promptForAccount(Scanner scanner) {
         String email = null;
         // do you have an account with us?
-        boolean hasAccount = prompForYesOrNo(scanner, "Do you have an account (Y or N)? ");
+        boolean hasAccount = prompForYesOrNo(scanner, PROMPT_HAVE_ACCOUNT);
 
         if (!hasAccount) {
             // create an account
             email = doCreateAccount(scanner);
         } else {
-            email = promptInput(scanner, "Please enter your email address: ");
+            email = promptInput(scanner, PROMPT_ENTER_EMAIL);
         }
         return email;
     }
@@ -200,10 +216,10 @@ public class MainMenu extends CliMenu {
         while (customer == null) {
             customer = hotelResource.getCustomer(email);
             if (customer == null) {
-                System.out.println("Your email address could not be found.");
-                boolean tryAgain = prompForYesOrNo(scanner, "Would you like to try again? (Enter Y or N): ");
+                System.out.println(ERROR_ACCOUNT_NOT_FOUNT);
+                boolean tryAgain = prompForYesOrNo(scanner, PROMPT_TRY_AGAIN);
                 if (tryAgain) {
-                    email = promptInput(scanner, "Please enter your email address: ");
+                    email = promptInput(scanner, PROMPT_ENTER_EMAIL);
                     continue;
                 }
             }
@@ -222,7 +238,7 @@ public class MainMenu extends CliMenu {
                         return room;
                     }
                 }
-                System.out.println("Room " + roomNumber + " is not available.  Please select a room from the list.");
+                System.out.printf(MSG_ROOM_NOT_AVAILABLE, roomNumber);
 
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ROOM_NUMBER_ENTRY);
@@ -242,13 +258,13 @@ public class MainMenu extends CliMenu {
                     System.out.println(ERROR_DATE_FORMAT);
                     continue;
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");  ;
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_ENTRY_FORMAT);  ;
                 Date selectedDate = dateFormat.parse(inputDate);
                 Date today = new Date();
 
                 // don't save a date in the past, so compare the dates (is selectedDate before today?)
                 if (selectedDate.before(today)) {
-                    System.out.println("Please enter a date in the future.");
+                    System.out.println(ERROR_PAST_DATE);
                     continue;
                 }
                 result = selectedDate;

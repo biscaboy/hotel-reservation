@@ -141,11 +141,15 @@ public class MainMenu extends CliMenu {
     private void doReserveARoom(Scanner scanner) {
         // prompt the user for dates
         Date checkInDate = promptForDate(scanner, PROMPT_ENTER_CHECK_IN_DATE);
-        Date checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
+        Date checkOutDate = null;
+        while(true) {
+            checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
 
-        if (checkOutDate.before(checkInDate)){
-            System.out.println(ERROR_PAST_CHECKOUT_DATE);
-            return;
+            if (checkOutDate.before(checkInDate)) {
+                System.out.println(ERROR_PAST_CHECKOUT_DATE);
+                continue;
+            }
+            break;
         }
 
         // check for available rooms

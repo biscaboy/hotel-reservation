@@ -58,7 +58,7 @@ public class MainMenu extends CliMenu {
     public static final String MSG_RESERVATION_FOUND = "Reservation%s found for %s.%n";
     public static final String MSG_ACCOUNT_CREATED = "Account Created: %s%n";
     public static final String MSG_ROOM_NOT_AVAILABLE = "Room %s is not available.  Please select a room from the list.%n";
-    public static final String MSG_SUCCESSFUL_RESERVATION = "Your reservation was successful.  %nReservation details:%s%n ";
+    public static final String MSG_SUCCESSFUL_RESERVATION = "Your reservation was successful.  %nReservation details: %s%n ";
 
     public static final String ERROR_DATE_FORMAT = "The date needs to entered as mm/dd/yyyy.";
     public static final String ERROR_ROOM_NUMBER_ENTRY = "Please enter the room number as it appears in the list.";
@@ -119,9 +119,8 @@ public class MainMenu extends CliMenu {
             System.out.printf(MSG_RESERVATION_NOT_FOUND, email);
         } else {
             String suffix = reservations.size() > 1 ? "s" : "";
-            System.out.printf(MSG_RESERVATION_FOUND, suffix, email);
             for (Reservation r : reservations) {
-                r.toString();
+                System.out.println(r.toString());
             }
         }
     }

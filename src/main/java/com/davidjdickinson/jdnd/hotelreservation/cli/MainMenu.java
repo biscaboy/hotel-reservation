@@ -223,6 +223,8 @@ public class MainMenu extends CliMenu {
                 if (tryAgain) {
                     email = promptInput(scanner, PROMPT_ENTER_EMAIL);
                     continue;
+                } else {
+                    return null;
                 }
             }
         }

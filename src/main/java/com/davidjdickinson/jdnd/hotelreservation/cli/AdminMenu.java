@@ -33,16 +33,15 @@ public class AdminMenu extends CliMenu {
     private static final String PROMPT_ENTER_A_ROOM_NUMBER = "Enter a room number: ";
     private static final String PROMPT_ENTER_A_ROOM_RATE = "Enter a room rate (e.g. 200.00): ";
     private static final String PROMPT_ENTER_A_ROOM_TYPE =
-            "Enter a room type: \n" + "" +
-            "( Enter 1 for SINGLE, 2 for DOUBLE ): ";
+            "Enter a room type: ( Enter 1 for SINGLE, 2 for DOUBLE ): ";
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
     private static final String MSG_NO_RESULTS = "There were no results to display.";
 
-    private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Try again.";
+    private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Please try again.";
     private static final String ERROR_ROOM_NUMBER_NOT_IN_RANGE = "Please enter a number between 100 and 999. ";
-    private static final String ERROR_ENTRY_IS_NOT_A_NUMBER = "Error: your entry is not a number.";
-    private static final String ERROR_TYPE_IS_NOT_VALID = "Your entry is not 1 or 2. Please try again.";
+    private static final String ERROR_ENTRY_IS_NOT_A_NUMBER = "Your entry is not a number. Please try again.";
+    private static final String ERROR_TYPE_IS_NOT_VALID = "That's not an option. Please enter 1 for Single or 2 for Double.";
 
     private static AdminMenu instance;
 
@@ -103,36 +102,12 @@ public class AdminMenu extends CliMenu {
             RoomType roomType = getRoomType(scanner);
             IRoom room = new Room(roomNumber, roomRate, roomType);
             roomsToAdd.add(room);
-            if (promptAddAnotherRoom(scanner)) {
+            if (prompForYesOrNo(scanner, PROMPT_ADD_ANOTHER_ROOM)) {
                 continue;
             }
             break;
         }
         return roomsToAdd;
-    }
-
-    private boolean promptAddAnotherRoom(Scanner scanner){
-        boolean addAnother = false;
-        while (true) {
-            try {
-                System.out.print(PROMPT_ADD_ANOTHER_ROOM);
-                String yesNoResponse = scanner.nextLine().toUpperCase();
-                // did they enter a Y or N?
-                if (yesNoResponse.length() != 1 ||
-                        (!(yesNoResponse.startsWith("Y") || yesNoResponse.startsWith("N")))) {
-                    System.out.println(ERROR_ENTER_Y_OR_NO);
-                    continue;
-                }
-                // Did they say YES?
-                if (yesNoResponse.startsWith("Y")) {
-                    addAnother = true;
-                }
-                break;
-            } catch (InputMismatchException inputMismatchException) {
-                System.out.println(ERROR_ENTER_Y_OR_NO);
-            }
-        }
-        return addAnother;
     }
 
     private RoomType getRoomType(Scanner scanner) {
@@ -149,7 +124,7 @@ public class AdminMenu extends CliMenu {
                 } else {
                     return RoomType.DOUBLE;
                 }
-            } catch (InputMismatchException inputMismatchException) {
+            } catch (InputMismatchException | NumberFormatException exception) {
                 System.out.println(ERROR_ENTRY_IS_NOT_A_NUMBER);
             }
         }
@@ -162,7 +137,7 @@ public class AdminMenu extends CliMenu {
             try {
                 roomRate = Double.parseDouble(scanner.nextLine());
                 break;
-            } catch (InputMismatchException inputMismatchException) {
+            } catch (InputMismatchException | NumberFormatException exception) {
                 System.out.println(ERROR_ENTRY_IS_NOT_A_NUMBER);
             }
         }
@@ -178,12 +153,13 @@ public class AdminMenu extends CliMenu {
                 roomNumber = Integer.parseInt(scanner.nextLine());
                 if (!(roomNumber >= 100 && roomNumber < 1000)) {
                     System.out.println(ERROR_ROOM_NUMBER_NOT_IN_RANGE);
-                    roomNumber = 0;
                     continue;
                 }
                 break;
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ROOM_NUMBER_NOT_IN_RANGE);
+            } catch (NumberFormatException numberFormatException) {
+                System.out.println(ERROR_ENTRY_IS_NOT_A_NUMBER);
             }
         }
         return String.valueOf(roomNumber);

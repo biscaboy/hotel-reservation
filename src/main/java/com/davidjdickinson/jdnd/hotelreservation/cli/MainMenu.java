@@ -172,7 +172,7 @@ public class MainMenu extends CliMenu {
             } else {
                 System.out.printf(MSG_SUCCESSFUL_RESERVATION, reservation.toString());
             }
-        } 
+        }
     }
 
     private IRoom promptSelectRoom(Scanner scanner, Collection<IRoom> availableRooms) {

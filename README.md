@@ -51,3 +51,4 @@ extensively
 * [RegEx](https://regexr.com/31p85)
 * [Comparing Dates](https://www.javatpoint.com/how-to-compare-dates-in-java)
 * [Date vs Calendar](https://stackoverflow.com/questions/1404210/java-date-vs-calendar)
+* [Singleton Design Pattern](https://www.geeksforgeeks.org/singleton-class-java/)

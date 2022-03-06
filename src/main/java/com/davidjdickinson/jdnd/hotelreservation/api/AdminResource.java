@@ -7,8 +7,6 @@ import com.davidjdickinson.jdnd.hotelreservation.service.CustomerService;
 import com.davidjdickinson.jdnd.hotelreservation.service.ReservationService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class AdminResource {

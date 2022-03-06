@@ -1,8 +1,5 @@
 package com.davidjdickinson.jdnd.hotelreservation.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Reservation {
     private Customer customer;
     private IRoom room;

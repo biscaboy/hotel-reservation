@@ -58,12 +58,13 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getCustomerReservations(Customer customer){
-        Collection<Reservation> customerReservations = new LinkedList<>();
+        List<Reservation> customerReservations = new LinkedList<>();
         for (Reservation r : reservationsMap.values()) {
             if (r.getCustomer().getEmail().equals(customer.getEmail())){
                 customerReservations.add(r);
             }
         }
+        Collections.sort(customerReservations);
         return customerReservations;
     }
 

@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * RegEx  - https://regexr.com/31p85
  * Comparing Dates - https://www.javatpoint.com/how-to-compare-dates-in-java
  * Date vs Calendar - https://stackoverflow.com/questions/1404210/java-date-vs-calendar
+ * Adding days to a date - https://www.javatpoint.com/java-date-add-days
  *
  * @author David Dickinson
  * @version 1.0
@@ -55,9 +56,13 @@ public class MainMenu extends CliMenu {
 
     public static final String MSG_RESERVATION_NOT_FOUND = "Sorry, no reservations were found for %s.%n";
     public static final String MSG_RESERVATION_FOUND = "Reservation%s found for %s.%n";
-    public static final String MSG_ACCOUNT_CREATED = "Account Created: %s%n";
+    public static final String MSG_ACCOUNT_CREATED = "Account created: %s%n";
     public static final String MSG_ROOM_NOT_AVAILABLE = "Room %s is not available.  Please select a room from the list.%n";
-    public static final String MSG_SUCCESSFUL_RESERVATION = "Your reservation was successful.  %nReservation details: %s%n ";
+    public static final String MSG_SUCCESSFUL_RESERVATION = "Your reservation was booked successfully.";
+    public static final String MSG_ROOMS_SEARCH_EXPANDING = "Expanding search for a week later: %s to %s%n";
+    public static final String MSG_ROOMS_AVAILABLE = "Rooms available to reserve:";
+    public static final String MSG_ROOM_SELECTED = "Room %s is the only room available and has been selected for you.%n";
+    public static final String MSG_RESERVATION_DETAILS = "Your reservation details: %s%n";
 
     public static final String ERROR_DATE_FORMAT = "The date needs to entered as mm/dd/yyyy.";
     public static final String ERROR_ROOM_NUMBER_ENTRY = "Please enter the room number as it appears in the list.";
@@ -66,7 +71,7 @@ public class MainMenu extends CliMenu {
     public static final String ERROR_ACCOUNT_NOT_FOUNT = "Your email address could not be found.";
     public static final String ERROR_PAST_DATE = "Please enter a date in the future.";
     public static final String ERROR_PAST_CHECKOUT_DATE = "The check-out date is before the check-in date. Please try again.";
-    public static final String ERROR_UNSUCCESSFUL_RESERVATION = "Your reservation was unsuccessful.  Please try again.";
+    public static final String ERROR_UNSUCCESSFUL_RESERVATION = "The reservation could not be completed.  Please try again.";
 
     private static final String menu =
             " =========== MAIN MENU ===========\n" +
@@ -152,7 +157,16 @@ public class MainMenu extends CliMenu {
         }
 
         // check for available rooms
+        // if there are no results, re-query for a week later and suggest rooms.
         Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+        if (availableRooms.isEmpty()) {
+            System.out.println(ERROR_NO_ROOMS_AVAILABLE);
+            checkInDate.addWeek();
+            checkOutDate.addWeek();
+            System.out.printf(MSG_ROOMS_SEARCH_EXPANDING, checkInDate, checkOutDate);
+            availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+        }
+
         IRoom selectedRoom = promptSelectRoom(scanner, availableRooms);
         if (selectedRoom == null) {
             System.out.println(ERROR_UNSUCCESSFUL_RESERVATION);
@@ -166,13 +180,16 @@ public class MainMenu extends CliMenu {
             return;
         }
 
+        Reservation pendingReservation = new Reservation(customer, selectedRoom, checkInDate, checkOutDate);
+        System.out.printf(MSG_RESERVATION_DETAILS, pendingReservation.toString());
+
         boolean saveReservation = prompForYesOrNo(scanner, PROMPT_SAVE_RESERVATION);
         if (saveReservation) {
             Reservation reservation = hotelResource.bookARoom(customer, selectedRoom, checkInDate, checkOutDate );
             if (reservation == null) {
                 System.out.println(ERROR_UNSUCCESSFUL_RESERVATION);
             } else {
-                System.out.printf(MSG_SUCCESSFUL_RESERVATION, reservation.toString());
+                System.out.println(MSG_SUCCESSFUL_RESERVATION);
             }
         }
     }
@@ -183,6 +200,7 @@ public class MainMenu extends CliMenu {
         if (availableRooms.isEmpty())  {
             System.out.println(ERROR_NO_ROOMS_AVAILABLE);
         } else {
+            System.out.println(MSG_ROOMS_AVAILABLE);
             for (IRoom r : availableRooms) {
                 System.out.println(r.toString());
             }
@@ -192,6 +210,7 @@ public class MainMenu extends CliMenu {
                 selectedRoom = promptForRoom(scanner, availableRooms);
             } else {
                 for (IRoom r : availableRooms) {
+                    System.out.printf(MSG_ROOM_SELECTED, r.getRoomNumber());
                     selectedRoom = r;
                 }
             }
@@ -237,12 +256,15 @@ public class MainMenu extends CliMenu {
                 System.out.print(PROMPT_ENTER_ROOM_NUMBER);
                 String roomNumber = scanner.nextLine().trim();
                 // did they enter a valid room number?
+                String availableRoomList = "";
                 for (IRoom room : availableRooms){
+                    availableRoomList = availableRoomList + room.toString() + "\n";
                     if (room.getRoomNumber().equals(roomNumber)) {
                         return room;
                     }
                 }
                 System.out.printf(MSG_ROOM_NOT_AVAILABLE, roomNumber);
+                System.out.println(availableRoomList);
 
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(ERROR_ROOM_NUMBER_ENTRY);

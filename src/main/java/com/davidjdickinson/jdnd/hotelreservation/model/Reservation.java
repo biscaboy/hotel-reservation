@@ -1,6 +1,8 @@
 package com.davidjdickinson.jdnd.hotelreservation.model;
 
-public class Reservation {
+import java.util.Comparator;
+
+public class Reservation implements Comparable {
     private Customer customer;
     private IRoom room;
     ReservationDate checkInDate;
@@ -58,10 +60,16 @@ public class Reservation {
         };
 
         // if either date is in between the dates of this reservation there is a conflict.
-        if ((this.checkInDate.after(checkInDate) && this.checkInDate.before(checkOutDate)) ||
-                (this.checkOutDate.after(checkInDate) && this.checkOutDate.before(checkOutDate))) {
+        if ((checkInDate.after(this.checkInDate) && checkInDate.before(this.checkOutDate)) ||
+                (checkOutDate.after(this.checkInDate) && checkOutDate.before(this.checkOutDate))) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Reservation r = (Reservation)o;
+        return Integer.compare(this.checkInDate.getId(), ((Reservation) o).getCheckInDate().getId());
     }
 }

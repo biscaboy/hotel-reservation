@@ -2,6 +2,7 @@ package com.davidjdickinson.jdnd.hotelreservation.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class ReservationDate implements Comparable {
     public static final String RESERVATION_DATE_FORMAT = "MM/dd/yyyy";
     private static final String RESERVATION_DATE_FORMAT_ID = "yyyyMMdd";
 
+    private Date date;
     private String formattedDate;
     private int id;
 
@@ -29,6 +31,7 @@ public class ReservationDate implements Comparable {
     }
 
     private void construct(Date date) {
+        this.date = date;
         formatter = new SimpleDateFormat(RESERVATION_DATE_FORMAT);
         this.formattedDate = formatter.format(date);
 
@@ -75,5 +78,12 @@ public class ReservationDate implements Comparable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void addWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, 7);
+        construct(calendar.getTime());
     }
 }

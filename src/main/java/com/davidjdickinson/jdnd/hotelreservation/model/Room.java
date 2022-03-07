@@ -1,5 +1,7 @@
 package com.davidjdickinson.jdnd.hotelreservation.model;
 
+import java.text.NumberFormat;
+
 public class Room implements IRoom {
 
     protected String roomNumber;
@@ -23,6 +25,11 @@ public class Room implements IRoom {
     }
 
     @Override
+    public String getRoomPriceAsCurrency() {
+        return NumberFormat.getCurrencyInstance().format(this.roomPrice);
+    }
+
+    @Override
     public RoomType getRoomType() {
         return roomType;
     }
@@ -35,8 +42,8 @@ public class Room implements IRoom {
     @Override
     public String toString() {
         return "Room: " + roomNumber +
-                " | Price: " + roomPrice +
-                " | Type: " + roomType + ")";
+                " | Price: " + this.getRoomPriceAsCurrency() +
+                " | Type: " + roomType;
     }
 
 }

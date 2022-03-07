@@ -37,6 +37,7 @@ public class AdminMenu extends CliMenu {
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
     private static final String MSG_NO_RESULTS = "There were no results to display.";
+    private static final String MSG_ROOM_EXISTS = "Room number %s already exists.";
 
     private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Please try again.";
     private static final String ERROR_ROOM_NUMBER_NOT_IN_RANGE = "Please enter a number between 100 and 999. ";
@@ -98,9 +99,31 @@ public class AdminMenu extends CliMenu {
         List<IRoom> roomsToAdd = new LinkedList<>();
         while (true) {
             String roomNumber = getRoomNumber(scanner);
+            // Does this number already exist or has been entered earlier?
+            // check the resource to see if it has been saved
+            IRoom room = adminResource.findRoomByNumber(roomNumber);
+            boolean roomAlreadySavedOrEntered = (room != null);
+            // check the local collection to see if it was already entered.
+            if (!roomAlreadySavedOrEntered) {
+                for (IRoom enteredRoom : roomsToAdd) {
+                    if (enteredRoom.getRoomNumber().equals(roomNumber)) {
+                        roomAlreadySavedOrEntered = true;
+                    }
+                }
+            }
+            if (roomAlreadySavedOrEntered) {
+                System.out.printf(MSG_ROOM_EXISTS, roomNumber);
+                // do you want to continue?
+                if (prompForYesOrNo(scanner, PROMPT_ADD_ANOTHER_ROOM)) {
+                    continue;
+                } else {
+                    return roomsToAdd;
+                }
+            }
+            // We have a unique room number
             Double roomRate = getRoomRate(scanner);
             RoomType roomType = getRoomType(scanner);
-            IRoom room = new Room(roomNumber, roomRate, roomType);
+            room = new Room(roomNumber, roomRate, roomType);
             roomsToAdd.add(room);
             if (prompForYesOrNo(scanner, PROMPT_ADD_ANOTHER_ROOM)) {
                 continue;
@@ -108,6 +131,22 @@ public class AdminMenu extends CliMenu {
             break;
         }
         return roomsToAdd;
+    }
+
+    private boolean isRoomNumberUnique(Scanner scanner, String roomNumber, Collection<IRoom> rooms) {
+        // Does this number already exist or has been entered earlier?
+        // check the resource to see if it has been saved
+        IRoom room = adminResource.findRoomByNumber(roomNumber);
+        boolean roomAlreadySavedOrEntered = (room != null);
+        // check the local collection to see if it was already entered.
+        if (!roomAlreadySavedOrEntered) {
+            for (IRoom enteredRoom : rooms) {
+                if (enteredRoom.getRoomNumber().equals(roomNumber)) {
+                    roomAlreadySavedOrEntered = true;
+                }
+            }
+        }
+        return roomAlreadySavedOrEntered;
     }
 
     private RoomType getRoomType(Scanner scanner) {

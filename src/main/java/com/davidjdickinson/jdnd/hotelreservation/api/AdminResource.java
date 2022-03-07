@@ -56,4 +56,8 @@ public class AdminResource {
     public Collection<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
+
+    public IRoom findRoomByNumber(String roomNumber) {
+        return reservationService.getARoom(roomNumber);
+    }
 }

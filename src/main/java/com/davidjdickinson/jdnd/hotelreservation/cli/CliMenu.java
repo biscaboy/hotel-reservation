@@ -22,7 +22,7 @@ public abstract class CliMenu {
     static final String ERROR_ENTER_Y_OR_NO = "Please enter Y or N.";
     static final String ERROR_ENTRY_FORMAT = "Your entry could not be read, please try again.";
 
-    static final String MSG_PROMPT_USER = " Please select a number for the menu option -> ";
+    static final String MSG_PROMPT_USER = "Please select a number for the menu option -> ";
 
     abstract void doOption(int optionNumber, Scanner scanner);
     abstract void displayMenu();

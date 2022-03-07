@@ -71,7 +71,7 @@ public class MainMenu extends CliMenu {
     public static final String ERROR_ACCOUNT_NOT_CREATED = "Your account could not be created.\n Please try again.";
     public static final String ERROR_ACCOUNT_NOT_FOUNT = "Your email address could not be found.";
     public static final String ERROR_PAST_DATE = "Please enter a date in the future.";
-    public static final String ERROR_PAST_CHECKOUT_DATE = "The check-out date is before the check-in date. Please try again.";
+    public static final String ERROR_PAST_CHECKOUT_DATE = "The check-out must be after the check-in date. Please try again.";
     public static final String ERROR_UNSUCCESSFUL_RESERVATION = "The reservation could not be completed.  Please try again.";
 
     private static final String menu =
@@ -153,7 +153,7 @@ public class MainMenu extends CliMenu {
         while(true) {
             checkOutDate = promptForDate(scanner, PROMPT_ENTER_CHECK_OUT_DATE);
 
-            if (checkOutDate.before(checkInDate)) {
+            if (checkOutDate.before(checkInDate) || checkOutDate.equals(checkInDate)) {
                 System.out.println(ERROR_PAST_CHECKOUT_DATE);
                 continue;
             }

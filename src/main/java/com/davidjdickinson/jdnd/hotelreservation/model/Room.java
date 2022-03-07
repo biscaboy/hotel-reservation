@@ -2,7 +2,7 @@ package com.davidjdickinson.jdnd.hotelreservation.model;
 
 import java.text.NumberFormat;
 
-public class Room implements IRoom {
+public class Room extends IRoom implements Comparable {
 
     protected String roomNumber;
     protected Double roomPrice;
@@ -46,4 +46,10 @@ public class Room implements IRoom {
                 " | Type: " + roomType;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        int a = Integer.parseInt(this.roomNumber);
+        int b = Integer.parseInt(((IRoom)o).getRoomNumber());
+        return Integer.compare(a, b);
+    }
 }

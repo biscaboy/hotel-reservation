@@ -54,7 +54,9 @@ public class ReservationService {
                 availableRooms.remove(r.getRoom().getRoomNumber());
             }
         }
-        return availableRooms.values();
+        List<IRoom> result = new LinkedList<>(availableRooms.values());
+        Collections.sort(result);
+        return result;
     }
 
     public Collection<Reservation> getCustomerReservations(Customer customer){
@@ -71,7 +73,7 @@ public class ReservationService {
     public void printAllReservations(){
         int count = 1;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        for (Reservation r : reservationsMap.values()) {
+        for (Reservation r : getAllReservations()) {
             String line = count + r.toString();
             System.out.println(line);
             count++;
@@ -80,11 +82,15 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getAllReservations(){
-        return reservationsMap.values();
+        List<Reservation> result = new LinkedList<>(reservationsMap.values());
+        Collections.sort(result);
+        return result;
     }
 
     public Collection<IRoom> getAllRooms(){
-        return roomMap.values();
+        List<IRoom> result = new LinkedList<>(roomMap.values());
+        Collections.sort(result);
+        return result;
     }
 }
 

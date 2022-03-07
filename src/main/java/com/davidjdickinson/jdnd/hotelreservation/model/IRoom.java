@@ -1,11 +1,11 @@
 package com.davidjdickinson.jdnd.hotelreservation.model;
 
-public interface IRoom {
+public abstract class IRoom implements Comparable{
 
-    public String getRoomNumber();
-    public Double getRoomPrice();
-    public RoomType getRoomType();
-    public boolean isFree();
-    public String getRoomPriceAsCurrency();
+    public abstract String getRoomNumber();
+    public abstract Double getRoomPrice();
+    public abstract RoomType getRoomType();
+    public abstract boolean isFree();
+    public abstract String getRoomPriceAsCurrency();
 
 }

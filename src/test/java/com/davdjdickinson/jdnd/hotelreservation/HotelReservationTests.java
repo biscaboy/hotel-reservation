@@ -4,6 +4,8 @@ import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
 import com.davidjdickinson.jdnd.hotelreservation.api.HotelResource;
 import com.davidjdickinson.jdnd.hotelreservation.model.*;
 import org.junit.jupiter.api.*;
+
+import java.text.ParseException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,15 +124,12 @@ public class HotelReservationTests {
 
     @Test
     @DisplayName("Book a room")
-    public void book_a_room() {
+    public void book_a_room() throws ParseException {
         HotelResource hotelResource = HotelResource.getInstance();
         Customer jill = hotelResource.getCustomer("jack@uphill.com");
         IRoom room = hotelResource.getRoom("202");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 05, 01);
-        ReservationDate checkInDate = new ReservationDate(calendar.getTime());
-        calendar.set(2022, 05, 10);
-        ReservationDate checkOutDate = new ReservationDate(calendar.getTime());
+        ReservationDate checkInDate = new ReservationDate("05/01/2022");
+        ReservationDate checkOutDate = new ReservationDate("05/10/2022");
         hotelResource.bookARoom(jill, room, checkInDate, checkOutDate);
 
         Collection<Reservation> reservations = hotelResource.getCustomerReservations("jack@uphill.com");
@@ -152,13 +151,11 @@ public class HotelReservationTests {
 
     @Test
     @DisplayName("Find a room")
-    public void find_a_room(){
+    public void find_a_room() throws ParseException {
         HotelResource hr = HotelResource.getInstance();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 06, 01);
-        ReservationDate checkInDate = new ReservationDate(calendar.getTime());
-        calendar.set(2022, 06, 10);
-        ReservationDate checkOutDate = new ReservationDate(calendar.getTime());
+        ReservationDate checkInDate = new ReservationDate("06/01/2022");
+        ReservationDate checkOutDate = new ReservationDate("06/10/2022");
         Collection<IRoom> availableRooms = hr.findARoom(checkInDate, checkOutDate);
 
         Assertions.assertEquals(6, availableRooms.size());
@@ -166,22 +163,17 @@ public class HotelReservationTests {
 
     @Test
     @DisplayName("Filter out date confilcts")
-    public void filter_out_date_conflicts(){
+    public void filter_out_date_conflicts() throws ParseException {
         HotelResource hr = HotelResource.getInstance();
         IRoom room1 = hr.getRoom("404");
         Customer customer = hr.getCustomer("jill@uphill.com");
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 07, 01);
-        Date checkInDate = calendar.getTime();
-        calendar.set(2022, 07, 10);
-        Date checkOutDate = calendar.getTime();
+        ReservationDate checkInDate = new ReservationDate("07/01/2022");
+        ReservationDate checkOutDate = new ReservationDate("07/10/2022");
 
-        hr.bookARoom(customer,room1,new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
-
-        calendar.set(2022, 07, 05);
-        ReservationDate desiredCheckInDate = new ReservationDate(calendar.getTime());
-        calendar.set(2022, 07, 15);
-        ReservationDate desiredCheckOutDate = new ReservationDate(calendar.getTime());
+        hr.bookARoom(customer,room1,checkInDate,checkOutDate);
+        ReservationDate desiredCheckInDate = new ReservationDate("07/05/2022");
+        ReservationDate desiredCheckOutDate = new ReservationDate("07/15/2022");
 
         // room 400 has conflicting dates with Jill's reservation so it shouldn't be in the returned list.
         Collection<IRoom> availableRooms = hr.findARoom(desiredCheckInDate, desiredCheckOutDate);

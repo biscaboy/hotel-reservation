@@ -16,10 +16,6 @@ public class ReservationDate implements Comparable {
 
     SimpleDateFormat formatter = new SimpleDateFormat();
 
-    public ReservationDate (Date date) throws NumberFormatException {
-        construct(date);
-    }
-
     public ReservationDate() {
         construct(new Date());
     }
@@ -44,10 +40,6 @@ public class ReservationDate implements Comparable {
         return this.formattedDate;
     }
 
-    public String getDate() {
-        return this.formattedDate;
-    }
-
     public int getId() {
         return this.id;
     }
@@ -59,7 +51,6 @@ public class ReservationDate implements Comparable {
     public boolean after(ReservationDate d){
         return this.compareTo(d) > 0;
     }
-
 
     @Override
     public int compareTo(Object o) {

@@ -64,6 +64,11 @@ public class Reservation implements Comparable {
                 (checkOutDate.after(this.checkInDate) && checkOutDate.before(this.checkOutDate))) {
             return true;
         }
+
+        // if checkout dates span existing reservation
+        if ((checkInDate.before(this.checkInDate)) && (checkOutDate.after(this.checkOutDate))) {
+            return true;
+        }
         return false;
     }
 

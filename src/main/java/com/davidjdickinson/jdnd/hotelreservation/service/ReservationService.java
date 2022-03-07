@@ -1,5 +1,6 @@
 package com.davidjdickinson.jdnd.hotelreservation.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,6 +37,9 @@ public class ReservationService {
         return roomMap.get(roomId);
     }
 
+    public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+        return reserveARoom(customer, room, new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
+    }
     public Reservation reserveARoom(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate){
         Reservation r = new Reservation(customer, room, checkInDate, checkOutDate);
         if (!reservationsMap.containsKey(r.getId())){
@@ -43,6 +47,10 @@ public class ReservationService {
             return r;
         }
         return null;
+    }
+
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) throws ParseException {
+        return findRooms(new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
     }
 
     public Collection<IRoom> findRooms(ReservationDate checkInDate, ReservationDate checkOutDate){

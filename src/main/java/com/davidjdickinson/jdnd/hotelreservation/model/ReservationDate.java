@@ -26,6 +26,10 @@ public class ReservationDate implements Comparable {
         construct(date);
     }
 
+    public ReservationDate(Date date) {
+        construct(date);
+    }
+
     private void construct(Date date) {
         this.date = date;
         formatter = new SimpleDateFormat(RESERVATION_DATE_FORMAT);

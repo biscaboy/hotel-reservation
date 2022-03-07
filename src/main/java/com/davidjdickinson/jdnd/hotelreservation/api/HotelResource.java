@@ -8,6 +8,7 @@ import com.davidjdickinson.jdnd.hotelreservation.service.CustomerService;
 import com.davidjdickinson.jdnd.hotelreservation.service.ReservationService;
 
 import java.util.Collection;
+import java.util.Date;
 
 public class HotelResource {
 
@@ -39,14 +40,21 @@ public class HotelResource {
         return reservationService.getARoom(roomNumber);
     }
 
+    public Reservation bookARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+        return bookARoom(customer, room, new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
+    }
+
     public Reservation bookARoom(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate){
         return reservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
-
     }
 
     public Collection<Reservation> getCustomerReservations(String customerEmail){
         Customer c = customerService.getCustomer(customerEmail);
         return reservationService.getCustomerReservations(c);
+    }
+
+    public Collection<IRoom> findARoom(Date checkInDate, Date checkOutDate){
+        return findARoom(new ReservationDate(checkInDate),new ReservationDate(checkOutDate));
     }
 
     public Collection<IRoom> findARoom(ReservationDate checkInDate, ReservationDate checkOutDate){

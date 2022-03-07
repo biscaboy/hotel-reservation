@@ -27,11 +27,19 @@ public class HotelApplication {
         CliMenu menu = MainMenu.getInstance();
 
         Scanner scanner = new Scanner(System.in);
-        int selectedMenuOption = 0;
+
+        int selectedMenuOption = CliMenu.OPTION_INITIALIZE_MENU;
 
         while (selectedMenuOption != CliMenu.OPTION_EXIT) {
 
             try {
+                // Never display 'Press ENTER to continue' at start or when displaying a menu
+                if ((selectedMenuOption != CliMenu.OPTION_INITIALIZE_MENU) &&
+                        (selectedMenuOption != CliMenu.OPTION_MENU)){
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+
                 menu.displayMenu();
                 menu.displayMainPrompt();
 
@@ -45,14 +53,14 @@ public class HotelApplication {
                 // if the user selected the admin menu, switch to the admin menu and continue.
                 if (menu instanceof MainMenu && selectedMenuOption == MainMenu.OPTION_ADMIN) {
                     menu = AdminMenu.getInstance();
-                    selectedMenuOption = 0;
+                    selectedMenuOption = CliMenu.OPTION_MENU;
                     continue;
                 }
 
                 // if the user is returning from the admin menu, switch back to the main menu and continue
                 if (menu instanceof AdminMenu && selectedMenuOption == AdminMenu.OPTION_EXIT) {
                     menu = MainMenu.getInstance();
-                    selectedMenuOption = 0;
+                    selectedMenuOption = CliMenu.OPTION_MENU;
                     continue;
                 }
 

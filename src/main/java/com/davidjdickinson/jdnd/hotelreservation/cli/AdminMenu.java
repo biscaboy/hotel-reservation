@@ -38,7 +38,8 @@ public class AdminMenu extends CliMenu {
     private static final String PROMPT_ADD_ANOTHER_ROOM = "Add another room? (Y or N): ";
 
     private static final String MSG_NO_RESULTS = "There were no results to display.";
-    private static final String MSG_ROOM_EXISTS = "Room number %s already exists.";
+    private static final String MSG_ROOM_EXISTS = "Room number %s already exists.%n";
+    private static final String MSG_ROOMS_ADDED_TITLE = "Room(s) you added:";
 
     private static final String ERROR_ENTRY_NOT_AN_OPTION = "That's not a menu option.  Please try again.";
     private static final String ERROR_ROOM_NUMBER_NOT_IN_RANGE = "Please enter a number between 100 and 999. ";
@@ -103,22 +104,13 @@ public class AdminMenu extends CliMenu {
             // Does this number already exist or has been entered earlier?
             // check the resource to see if it has been saved
             IRoom room = adminResource.findRoomByNumber(roomNumber);
-            boolean roomAlreadySavedOrEntered = (room != null);
-            // check the local collection to see if it was already entered.
-            if (!roomAlreadySavedOrEntered) {
-                for (IRoom enteredRoom : roomsToAdd) {
-                    if (enteredRoom.getRoomNumber().equals(roomNumber)) {
-                        roomAlreadySavedOrEntered = true;
-                    }
-                }
-            }
-            if (roomAlreadySavedOrEntered) {
+            if (isRoomNumberUnique(scanner, roomNumber, roomsToAdd)) {
                 System.out.printf(MSG_ROOM_EXISTS, roomNumber);
                 // do you want to continue?
                 if (prompForYesOrNo(scanner, PROMPT_ADD_ANOTHER_ROOM)) {
                     continue;
                 } else {
-                    return roomsToAdd;
+                    break;
                 }
             }
             // We have a unique room number
@@ -134,6 +126,13 @@ public class AdminMenu extends CliMenu {
                 continue;
             }
             break;
+        }
+        // list out the entered rooms
+        if (!roomsToAdd.isEmpty()){
+            System.out.println(MSG_ROOMS_ADDED_TITLE);
+            for (IRoom r : roomsToAdd) {
+                System.out.println(r.toString());
+            }
         }
         return roomsToAdd;
     }

@@ -63,6 +63,7 @@ public class MainMenu extends CliMenu {
     public static final String MSG_ROOMS_AVAILABLE = "Rooms available to reserve:";
     public static final String MSG_ROOM_SELECTED = "Room %s is the only room available and has been selected for you.%n";
     public static final String MSG_RESERVATION_DETAILS = "Your reservation details: %s%n";
+    public static final String MSG_EXIT = "Thank you for using this service!  Goodbye.";
 
     public static final String ERROR_DATE_FORMAT = "The date needs to entered as mm/dd/yyyy.";
     public static final String ERROR_ROOM_NUMBER_ENTRY = "Please enter the room number as it appears in the list.";
@@ -111,6 +112,9 @@ public class MainMenu extends CliMenu {
                 break;
             case (OPTION_CREATE_AN_ACCOUNT) :
                 doCreateAccount(scanner);
+                break;
+            case (OPTION_EXIT) :
+                System.out.println(MSG_EXIT);
                 break;
         }
     }

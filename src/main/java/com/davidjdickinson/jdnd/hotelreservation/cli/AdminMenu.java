@@ -1,6 +1,7 @@
 package com.davidjdickinson.jdnd.hotelreservation.cli;
 
 import com.davidjdickinson.jdnd.hotelreservation.api.AdminResource;
+import com.davidjdickinson.jdnd.hotelreservation.model.FreeRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.IRoom;
 import com.davidjdickinson.jdnd.hotelreservation.model.Room;
 import com.davidjdickinson.jdnd.hotelreservation.model.RoomType;
@@ -123,7 +124,11 @@ public class AdminMenu extends CliMenu {
             // We have a unique room number
             Double roomRate = getRoomRate(scanner);
             RoomType roomType = getRoomType(scanner);
-            room = new Room(roomNumber, roomRate, roomType);
+            if (roomRate > 0.0) {
+                room = new Room(roomNumber, roomRate, roomType);
+            } else {
+                room = new FreeRoom(roomNumber, 0.0, roomType);
+            }
             roomsToAdd.add(room);
             if (prompForYesOrNo(scanner, PROMPT_ADD_ANOTHER_ROOM)) {
                 continue;

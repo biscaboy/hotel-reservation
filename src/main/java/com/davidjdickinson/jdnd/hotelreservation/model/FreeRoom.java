@@ -11,4 +11,10 @@ public class FreeRoom extends Room {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Room: " + roomNumber +
+                " | Price: Free" +
+                " | Type: " + roomType;
+    }
 }

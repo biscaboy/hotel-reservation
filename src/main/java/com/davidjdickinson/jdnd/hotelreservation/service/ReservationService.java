@@ -40,6 +40,7 @@ public class ReservationService {
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         return reserveARoom(customer, room, new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
     }
+
     public Reservation reserveARoom(Customer customer, IRoom room, ReservationDate checkInDate, ReservationDate checkOutDate){
         Reservation r = new Reservation(customer, room, checkInDate, checkOutDate);
         if (!reservationsMap.containsKey(r.getId())){
@@ -49,7 +50,7 @@ public class ReservationService {
         return null;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) throws ParseException {
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
         return findRooms(new ReservationDate(checkInDate), new ReservationDate(checkOutDate));
     }
 
@@ -62,9 +63,7 @@ public class ReservationService {
                 availableRooms.remove(r.getRoom().getRoomNumber());
             }
         }
-        List<IRoom> result = new LinkedList<>(availableRooms.values());
-        Collections.sort(result);
-        return result;
+        return sortRooms(availableRooms.values());
     }
 
     public Collection<Reservation> getCustomerReservations(Customer customer){
@@ -74,13 +73,11 @@ public class ReservationService {
                 customerReservations.add(r);
             }
         }
-        Collections.sort(customerReservations);
-        return customerReservations;
+        return sortReservations(customerReservations);
     }
 
     public void printAllReservations(){
         int count = 1;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for (Reservation r : getAllReservations()) {
             String line = count + r.toString();
             System.out.println(line);
@@ -96,9 +93,18 @@ public class ReservationService {
     }
 
     public Collection<IRoom> getAllRooms(){
-        List<IRoom> result = new LinkedList<>(roomMap.values());
+        return sortRooms(roomMap.values());
+    }
+
+    Collection<IRoom> sortRooms(Collection<IRoom> rooms) {
+        List<IRoom> result = new LinkedList<>(rooms);
         Collections.sort(result);
         return result;
+    }
+
+    Collection<Reservation> sortReservations(List<Reservation> reservations) {
+        Collections.sort(reservations);
+        return reservations;
     }
 }
 
